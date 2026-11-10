@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ôn thi MĐ6 · Chăm sóc sức khỏe người lớn bệnh nội khoa I</title>
+<style>
+:root{
+  --bg:#f3faf5;
+  --card:#ffffff;
+  --line:#d7eedf;
+  --line2:#bfe3cc;
+  --soft:#eef8f1;
+  --soft2:#dcf1e3;
+  --pinkbox:#e6f5eb;
+  --or:#6cbf8e;
+  --or-d:#4fa574;
+  --or-l:#d9f0e1;
+  --text:#2c3b32;
+  --muted:#7d9888;
+  --ok:#2f9b63; --ok-soft:#dcf3e5;
+  --bad:#e0677a; --bad-soft:#fde9ec;
+  --warn:#e6a04f;
+  --shadow:0 4px 18px rgba(80,160,110,.10);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:"Be Vietnam Pro","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--text);background:var(--bg);font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+.app{display:grid;grid-template-columns:300px minmax(0,1fr) 320px;gap:22px;height:100vh;padding:16px;max-width:1600px;margin:0 auto}
+.col{min-height:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+
+/* ===== LEFT ===== */
+.left{overflow:auto;padding:16px 12px;display:flex;flex-direction:column;gap:6px}
+.left::-webkit-scrollbar,.right::-webkit-scrollbar{width:8px}
+.left::-webkit-scrollbar-thumb,.right::-webkit-scrollbar-thumb{background:#c6e3d0;border-radius:8px}
+.btn-board{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:14px;background:var(--or);color:#fff;font-weight:700;font-size:16px;box-shadow:0 6px 14px rgba(108,191,142,.30);transition:.15s}
+.btn-board:hover{background:var(--or-d)}
+.btn-board.on{outline:3px solid #b6e0c5}
+.sec{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:16px 10px 6px}
+.brand{padding:4px 10px 0}
+.brand b{display:block;font-size:15.5px;line-height:1.35}
+.brand small{color:var(--muted);font-size:12.5px}
+.row{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:10px 12px;border-radius:14px;border:1.5px solid transparent;transition:.12s}
+.row:hover{background:var(--soft)}
+.row.active{background:var(--or-l);border-color:#9fd3b2}
+.num{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:17px;background:var(--pinkbox);color:var(--text)}
+.row.active .num{background:var(--or);color:#fff}
+.row .tx{min-width:0}
+.row .tx b{display:block;font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .tx small{display:block;font-size:13px;color:var(--muted)}
+.row .tx small.done{color:#2f8a5d;font-weight:600}
+.row .tx small.doing{color:#c46a1c;font-weight:600}
+.tip{margin-top:auto;padding:14px 10px 4px;font-size:12.5px;color:var(--muted)}
+
+/* ===== MIDDLE ===== */
+.mid{overflow:auto;scroll-behavior:smooth;padding:0 4px 0 0}
+.mid-inner{display:flex;flex-direction:column;gap:18px;padding-bottom:40px}
+.head{padding:22px 26px}
+.head-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.head h2{margin:0;font-size:22px}
+.note{margin-top:12px;padding:12px 16px;border:1.5px dashed var(--line2);border-radius:12px;background:#f8fcf9;color:var(--muted);font-size:14.5px}
+.note b{color:var(--text)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:13px;padding:6px 12px;border-radius:999px;border:1.5px solid var(--line2);background:#fff;font-weight:600}
+.chip.on{background:var(--or);border-color:var(--or);color:#fff}
+
+.intro{padding:40px 30px;text-align:center}
+.intro h3{margin:4px 0 6px;font-size:24px}
+.intro .big{font-size:52px;line-height:1}
+.intro ul{list-style:none;padding:0;margin:20px auto;max-width:460px;text-align:left;display:grid;gap:8px}
+.intro li{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border-radius:14px;font-weight:700;font-size:16px;transition:.15s}
+.btn-or{background:var(--or);color:#fff;box-shadow:0 6px 14px rgba(108,191,142,.30)}
+.btn-or:hover{background:var(--or-d)}
+.btn-line{background:#fff;border:1.5px solid var(--line2);color:var(--text)}
+.btn-line:hover{background:var(--soft)}
+.btn[disabled]{opacity:.4;pointer-events:none}
+
+.part{font-size:15px;font-weight:800;color:var(--or);margin:6px 6px -6px}
+.q{padding:24px 28px;scroll-margin-top:12px;border:1.5px solid var(--line);transition:border-color .2s}
+.q.flash{border-color:var(--or);box-shadow:0 0 0 4px #d3eedd}
+.q-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.qn{font-size:30px;font-weight:800;color:var(--or);line-height:1}
+.qs{font-size:16px;color:var(--muted)}
+.q.answered .qs{color:var(--or)}
+.flag{margin-left:auto;font-size:13px;padding:7px 12px;border-radius:10px;border:1.5px solid var(--line);color:var(--muted);background:#fff}
+.flag.on{background:#fff4d9;border-color:#f3cd84;color:#b7791f}
+.q-tag{font-size:13px;font-weight:600;color:var(--muted);margin:10px 0 4px}
+.q-text{font-size:18px;font-weight:700;margin:0 0 16px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:12px 16px;border-radius:14px;border:1.5px solid var(--line2);background:#fff;font-size:16px;transition:.12s;box-shadow:0 2px 0 #dcefe2}
+.opt:hover{background:var(--soft)}
+.opt .k{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-weight:800;background:var(--soft2);color:var(--or-d)}
+.opt.sel{border-color:var(--or);background:#ecf8f0}
+.opt.sel .k{background:var(--or);color:#fff}
+.locked .opt{cursor:default}
+.locked .opt:hover{background:#fff}
+.opt.is-correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.is-correct .k{background:var(--ok);color:#fff}
+.opt.is-correct::after{content:"✓ Đúng";margin-left:auto;font-weight:700;font-size:13px;color:var(--ok)}
+.opt.is-incorrect::after{content:"✗ Sai";margin-left:auto;font-weight:700;font-size:13px;color:var(--bad)}
+.cell.ok{background:var(--ok)!important}
+.opt.is-incorrect{border-color:var(--bad);background:var(--bad-soft)}
+.opt.is-incorrect .k{background:var(--bad);color:#fff}
+.chk-row{display:flex;justify-content:flex-end;margin-top:14px}
+.btn-chk{padding:9px 18px;border-radius:12px;border:1.5px solid var(--or);color:var(--or);background:#fff;font-weight:700;font-size:14.5px;transition:.12s}
+.btn-chk:hover{background:var(--or);color:#fff}
+.btn-chk[disabled]{border-color:var(--line2);color:#b4cbbd;pointer-events:none}
+.expl{margin-top:14px;padding:12px 16px;border-radius:12px;background:#f7fcf8;border:1.5px dashed #a9d9bb;font-size:14.5px}
+.expl b{color:var(--or-d)}
+.q.is-right{border-color:#bfe5cf}.q.is-right .qs{color:var(--ok)}
+.q.is-wrong{border-color:#f3b6c0}.q.is-wrong .qs{color:var(--bad)}
+.q.is-skip{border-color:#f0d3a8}.q.is-skip .qs{color:#c4801f}
+
+.result{padding:26px;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
+.ring{width:124px;height:124px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--or) calc(var(--p)*1%),#e1f2e7 0)}
+.ring>div{width:98px;height:98px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center}
+.ring b{font-size:30px;line-height:1}
+.ring small{font-size:12px;color:var(--muted)}
+.result h3{margin:0 0 6px;font-size:21px}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+.st{padding:6px 12px;border-radius:10px;font-size:14px;font-weight:700}
+.st.ok{background:var(--ok-soft);color:#2f8a5d}.st.bad{background:var(--bad-soft);color:#b8435a}.st.sk{background:#fff1dd;color:#b7701f}.st.tm{background:var(--soft2);color:var(--or-d)}
+
+/* board */
+.board{padding:24px 26px}
+.board table{width:100%;border-collapse:collapse;margin-top:14px;font-size:15px}
+.board th{text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px;border-bottom:1.5px solid var(--line)}
+.board td{padding:12px 10px;border-bottom:1px solid var(--line)}
+.board tr.clk{cursor:pointer}.board tr.clk:hover td{background:var(--soft)}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12.5px;font-weight:700}
+.p-new{background:#edf3ef;color:#7d9888}.p-doing{background:#fff1dd;color:#c46a1c}.p-done{background:var(--ok-soft);color:#2f8a5d}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
+.sum div{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.sum b{display:block;font-size:26px;color:var(--or)}
+.sum small{color:var(--muted)}
+
+/* ===== RIGHT ===== */
+.right{overflow:hidden;display:flex;flex-direction:column}
+.side{padding:20px 18px;display:flex;flex-direction:column;flex:1;min-height:0}
+.gwrap{flex:1;min-height:110px;overflow:auto;margin:14px -6px 0;padding:2px 6px}
+.side-lbl{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.side-sub{font-size:15px;color:var(--muted);margin-top:4px}
+.side-sub b{color:var(--text)}
+.tbox{margin:14px 0;padding:14px;border-radius:16px;background:var(--pinkbox);text-align:center}
+.tbox .lbl{font-size:15px;color:var(--muted)}
+.clock{font-variant-numeric:tabular-nums;font-size:46px;font-weight:800;color:var(--or);line-height:1.15;margin:4px 0 10px}
+.clock.warn{color:var(--warn)}
+.clock.danger{color:var(--bad);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.55}}
+.bar{height:7px;border-radius:99px;background:#d3ebdb;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--or);transition:width .5s}
+.boxes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bx{border-radius:16px;padding:12px 8px;text-align:center;border:1.5px solid var(--line2);background:#fff}
+.bx b{display:block;font-size:30px;line-height:1.1;font-weight:700}
+.bx small{font-size:15px;color:var(--muted)}
+.bx.fill{background:var(--or);border-color:var(--or);color:#fff}
+.bx.fill small{color:#fff}
+.qgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+.cell{position:relative;height:40px;border-radius:12px;font-size:15px;font-weight:600;background:#fff;border:1.5px solid var(--line2);color:var(--text);padding:0}
+.cell:hover{border-color:var(--or)}
+.cell.ans{background:var(--or);border-color:var(--or);color:#fff}
+.cell.flg::after{content:"";position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:#f2b437;box-shadow:0 0 0 2px #fff}
+.cell.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.cell.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.cell.skip{background:#fff1dd;border-color:#f0c88e;color:#b7701f}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0 14px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:16px;height:16px;border-radius:4px;display:inline-block;border:1.5px solid var(--line2);background:#fff}
+.side .btn{width:100%}
+.side .reset{margin-top:10px;padding:10px;font-size:14.5px}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(30,60,45,.35);display:none;place-items:center;z-index:50;padding:20px}
+.modal.show{display:grid}
+.modal-box{background:#fff;border-radius:20px;padding:28px;max-width:400px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.18);text-align:center}
+.modal-box h3{margin:6px 0 8px}
+.modal-box p{margin:0 0 18px;color:var(--muted)}
+.modal-actions{display:flex;gap:10px;justify-content:center}
+.mobile-bar{display:none}
+
+@media (max-width:1200px){
+  .app{grid-template-columns:250px minmax(0,1fr) 280px;gap:14px}
+  .clock{font-size:40px}
+  .qgrid{grid-template-columns:repeat(5,1fr)}
+}
+@media (max-width:860px){
+  .app{grid-template-columns:84px minmax(0,1fr);gap:10px;padding:10px 10px 0;height:calc(100vh - 68px)}
+  .left{padding:10px 6px;gap:4px}
+  .brand,.tip,.row .tx small{display:none}
+  .btn-board{padding:10px 4px;font-size:12px;flex-direction:column;gap:2px}
+  .sec{font-size:10px;padding:10px 2px 4px;text-align:center;letter-spacing:.03em}
+  .row{flex-direction:column;gap:4px;padding:8px 4px;text-align:center}
+  .row .tx b{font-size:11.5px}
+  .num{width:40px;height:40px}
+  .head{padding:16px}
+  .head h2{font-size:18px}
+  .q{padding:16px}
+  .q-text{font-size:16px}
+  .opt{font-size:15px;padding:10px 12px}
+  .intro{padding:26px 16px}
+  .right{position:fixed;left:0;right:0;bottom:0;z-index:20;overflow:visible}
+  .right .side{display:none;border-radius:20px 20px 0 0;max-height:70vh;overflow:auto}
+  .right .gwrap{flex:none;overflow:visible}
+  .right.open .side{display:block}
+  .mobile-bar{display:flex;align-items:center;gap:10px;height:68px;padding:10px 12px;background:#fff;border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(108,191,142,.15)}
+  .mobile-bar .mclock{font-weight:800;font-size:24px;font-variant-numeric:tabular-nums;color:var(--or)}
+  .mobile-bar .mclock.danger{color:var(--bad)}
+  .mobile-bar .mcount{font-size:13px;color:var(--muted);flex:1}
+  .mobile-bar .btn{padding:10px 14px;font-size:14px}
+  .result{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .board{padding:16px}.board table{font-size:13px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- CỘT TRÁI: CHỌN ĐỀ -->
+  <aside class="col card left" id="left">
+    <button class="btn-board" id="boardBtn">📊 Bảng kết quả</button>
+    <div class="sec">Ôn thi · Mô đun 6</div>
+    <div class="brand"><b>Chăm sóc sức khỏe người lớn bệnh nội khoa I</b><small>Hô hấp · Tiêu hóa · Tim mạch · Huyết học</small></div>
+    <div class="sec">Chọn đề · 60 câu / 60 phút</div>
+    <div id="examList"></div>
+    <div class="tip">Bấm số câu ở cột phải để nhảy tới câu đó. Bài làm được lưu tự động trên trình duyệt này.</div>
+  </aside>
+
+  <!-- CỘT GIỮA: ĐỀ -->
+  <main class="col mid" id="mid"><div class="mid-inner" id="midInner"></div></main>
+
+  <!-- CỘT PHẢI: ĐỒNG HỒ, TIẾN ĐỘ, NỘP BÀI -->
+  <aside class="col right" id="right">
+    <div class="card side">
+      <div class="side-lbl" id="sideLbl">Đề số 1 · Ôn thi</div>
+      <div class="side-sub">Mô đun 6 · <b>Nội khoa I</b></div>
+      <div class="tbox">
+        <div class="lbl" id="timerLbl">Thời gian còn lại</div>
+        <div class="clock" id="clock">60:00</div>
+        <div class="bar"><i id="timeBar" style="width:100%"></i></div>
+      </div>
+      <div class="boxes">
+        <div class="bx fill"><b id="cDone">0</b><small id="cDoneLbl">Đã làm</small></div>
+        <div class="bx"><b id="cLeft">60</b><small id="cLeftLbl">Chưa làm</small></div>
+      </div>
+      <div class="gwrap"><div class="qgrid" id="qgrid"></div></div>
+      <div class="legend" id="legend"></div>
+      <button class="btn btn-or" id="submitBtn">Nộp bài</button>
+      <button class="btn btn-line reset" id="resetBtn">↻ Làm lại đề này</button>
+    </div>
+    <div class="mobile-bar">
+      <span class="mclock" id="mclock">60:00</span>
+      <span class="mcount" id="mcount">0/60 câu</span>
+      <button class="btn btn-line" id="mGrid">☰ Câu</button>
+      <button class="btn btn-or" id="mSubmit">Nộp</button>
+    </div>
+  </aside>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div style="font-size:38px" id="mIcon">📝</div>
+    <h3 id="mTitle">Nộp bài?</h3>
+    <p id="mText"></p>
+    <div class="modal-actions">
+      <button class="btn btn-line" id="mCancel">Làm tiếp</button>
+      <button class="btn btn-or" id="mOk">Nộp bài</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const EXAMS = [[{"q": "Nguyên nhân gây tràn dịch màng phổi DỊCH THẤM là:", "o": ["Lao màng phổi", "Viêm phổi", "Ung thư phổi", "Suy tim, hội chứng thận hư, suy dinh dưỡng"], "a": 3, "e": "Dịch thấm có nguyên nhân ngoài phổi.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc tràn dịch màng phổi"}, {"q": "Hiệu ứng Bohr là hiện tượng:", "o": ["Tăng phân ly HbO2 khi PCO2 tăng / pH giảm", "Giảm thải CO2 ở phổi", "Tăng gắn O2 vào Hb khi pH tăng", "Tăng surfactant khi thiếu oxy"], "a": 0, "e": "Đường cong phân ly HbO2 chuyển sang phải.", "t": "Phần 1 · Hô hấp – Bài: Giải phẫu sinh lý hệ hô hấp"}, {"q": "Ống dẫn khí (dây máy thở) cần để thấp hơn mask thở nhằm:", "o": ["Tăng áp lực", "Tăng FiO2", "Giảm tiếng ồn", "Tránh nước đọng ở thành ống chảy vào người bệnh"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Thở máy không xâm nhập, thở oxy"}, {"q": "Hình ảnh X-quang điển hình của viêm phổi thùy là:", "o": ["Đám mờ hình tam giác đáy quay ra ngoài, đỉnh quay vào trong, có phế quản hơi", "Hình hang có mức nước – hơi", "Mờ đều quá 1/2 phổi đẩy tim sang đối diện", "Hình tổ ong"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc viêm phổi"}, {"q": "Nguyên nhân chính gây bệnh phổi tắc nghẽn mạn tính (COPD) là:", "o": ["Thiếu alpha-1 antitrypsin", "Nhiễm virus", "Dị ứng phấn hoa", "Khói thuốc lá (chủ động và thụ động)"], "a": 3, "e": "Khói thuốc là nguyên nhân chính; thiếu alpha-1 antitrypsin ít phổ biến hơn.", "t": "Phần 1 · Hô hấp – Bài: Dinh dưỡng BPTNMT"}, {"q": "Dẫn lưu tư thế, vỗ rung ở người bệnh giãn phế quản nên thực hiện:", "o": ["Chỉ khi ho ra máu", "Ngay sau bữa ăn", "1 lần/tuần", "2–3 lần/ngày, trước bữa ăn"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc giãn phế quản"}, {"q": "Theo GOLD, COPD giai đoạn 3 (nặng) tương ứng với:", "o": ["FEV1 < 30%", "30% ≤ FEV1 < 50%", "FEV1 ≥ 80%", "50% ≤ FEV1 < 80%"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc BPTNMT"}, {"q": "Đờm màu gỉ sắt, lượng ít, khó khạc gợi ý bệnh:", "o": ["Giãn phế quản", "Phù phổi cấp", "Áp xe phổi", "Viêm phổi"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Nhận định người bệnh hô hấp"}, {"q": "Bình dẫn lưu màng phổi phải luôn được đặt:", "o": ["Thấp hơn vị trí đặt sonde", "Trên giường cạnh người bệnh", "Cao hơn vị trí đặt sonde", "Ngang mức ngực người bệnh"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc dẫn lưu màng phổi"}, {"q": "Nhóm thuốc nào sau đây thuộc nhóm thuốc CHỐNG VIÊM trong điều trị hen?", "o": ["Glucocorticoid, natri cromoglicat, kháng leucotrien", "Ipratropium", "Salbutamol, terbutalin", "Theophylin"], "a": 0, "e": "Thuốc chống viêm: glucocorticoid, natri cromoglicat, kháng leucotrien.", "t": "Phần 1 · Hô hấp – Bài: Thuốc điều trị hen phế quản"}, {"q": "Thuốc cần thận trọng khi dùng cho người bệnh hen phế quản là:", "o": ["Aspirin, NSAID, thuốc chẹn beta giao cảm", "Salbutamol", "Paracetamol", "Vitamin C"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc hen phế quản"}, {"q": "Đau ngực kiểu 'như dao đâm', sâu một bên, kèm khó thở, vã mồ hôi, mạch nhanh gặp trong:", "o": ["Cơn đau thắt ngực ổn định", "Tràn khí màng phổi", "Viêm phế quản", "Hen phế quản"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Nhận định người bệnh hô hấp"}, {"q": "Phổi phải và phổi trái lần lượt có số thùy là:", "o": ["2 và 3", "3 và 2", "2 và 2", "3 và 3"], "a": 1, "e": "Phổi trái chỉ có khe chếch nên có 2 thùy.", "t": "Phần 1 · Hô hấp – Bài: Giải phẫu sinh lý hệ hô hấp"}, {"q": "Mủ màu chocolate khi người bệnh áp xe phổi ộc mủ gợi ý nguyên nhân do:", "o": ["Tụ cầu", "Vi khuẩn kỵ khí", "Áp xe đường mật vỡ", "Amip"], "a": 3, "e": "Mủ vàng như mật gợi ý áp xe đường mật vỡ lên phổi.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc áp xe phổi"}, {"q": "Nguyên nhân hay gặp nhất gây viêm phổi là:", "o": ["Nấm", "Ký sinh trùng", "Virus", "Vi khuẩn (như Streptococcus pneumoniae)"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc viêm phổi"}, {"q": "Ống dài trong bình dẫn lưu cần ngập trong nước vô khuẩn khoảng:", "o": ["20 cm", "2–3 cm", "10 cm", "0,5 cm"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc dẫn lưu màng phổi"}, {"q": "Lời khuyên phòng bệnh nào ĐÚNG cho người bệnh hen phế quản dị ứng?", "o": ["Nuôi chó mèo để tăng miễn dịch", "Dùng nước hoa để át mùi", "Vệ sinh nơi ở, tránh bụi, không nuôi chó mèo, chim cảnh", "Tập thể dục gắng sức nơi lạnh"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc hen phế quản"}, {"q": "Sau khi hít thuốc bằng HandiHaler/Aerolizer, người bệnh cần nín thở khoảng:", "o": ["2 giây", "30 giây", "1 phút", "10 giây"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Dụng cụ phân phối thuốc hô hấp"}, {"q": "Thuốc cường β2 tác dụng ngắn (SABA) dùng chủ yếu để cắt cơn hen là:", "o": ["Salbutamol", "Salmeterol", "Formoterol", "Budesonid"], "a": 0, "e": "SABA: salbutamol, terbutalin, fenoterol – dùng cắt cơn; salmeterol, formoterol là LABA.", "t": "Phần 1 · Hô hấp – Bài: Thuốc điều trị hen phế quản"}, {"q": "Câu nói kinh điển của Schwann về loét dạ dày là:", "o": ["Không có HP – không có loét", "Không có stress – không có loét", "Không có pepsin – không có loét", "Không có acid – không có loét"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Sinh lý bệnh tiêu hóa"}, {"q": "Theo thang điểm BISAP, viêm tụy cấp NẶNG khi:", "o": ["0–2 điểm", "3–5 điểm", "Trên 8 điểm", "0–1 điểm"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc viêm tụy cấp"}, {"q": "Ống mật chủ được tạo thành do:", "o": ["Ống tụy chính hợp ống tụy phụ", "Ống gan phải hợp ống gan trái", "Ống gan chung hợp với ống túi mật", "Ống túi mật hợp ống tụy"], "a": 2, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Giải phẫu sinh lý hệ tiêu hóa"}, {"q": "Phân lờ lờ máu cá (nhầy lẫn máu) thường gặp trong:", "o": ["Tắc mật", "Loét dạ dày", "Kiết lỵ hoặc ung thư", "Xơ gan"], "a": 2, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Nhận định người bệnh tiêu hóa"}, {"q": "Theo phân loại Child-Pugh, xơ gan Child-Pugh C tương ứng với:", "o": ["5–6 điểm", "7–9 điểm", "10–15 điểm", "Trên 20 điểm"], "a": 2, "e": "Tiên lượng xấu.", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xơ gan"}, {"q": "Nhu cầu protein ở người bệnh xơ gan là:", "o": ["Cắt bỏ hoàn toàn protein", "1,2–1,5 g/kg/ngày", "0,5 g/kg/ngày", "2,5 g/kg/ngày"], "a": 1, "e": "Không nên hạn chế protein ở người bệnh có bệnh não gan.", "t": "Phần 2 · Tiêu hóa – Bài: Dinh dưỡng xơ gan, VTC, loét DDTT"}, {"q": "Nhóm thuốc ức chế tiết acid mạnh nhất (ức chế khâu cuối cùng) là:", "o": ["Kháng cholinergic", "Kháng H2", "Kháng acid", "Ức chế bơm proton (PPI)"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Thuốc điều trị bệnh tiêu hóa"}, {"q": "Biến chứng của loét dạ dày tá tràng KHÔNG bao gồm:", "o": ["Thủng ổ loét", "Xơ gan", "Chảy máu tiêu hóa", "Hẹp môn vị, ung thư hóa"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc loét dạ dày tá tràng"}, {"q": "Bismuth subcitrat, ngoài tác dụng bao phủ ổ loét còn có tác dụng:", "o": ["Lợi tiểu", "Ức chế bơm proton", "Kháng histamin H2", "Diệt vi khuẩn Helicobacter pylori"], "a": 3, "e": "Thường phối hợp với metronidazol, amoxicilin… để diệt HP.", "t": "Phần 2 · Tiêu hóa – Bài: Thuốc điều trị bệnh tiêu hóa"}, {"q": "Pepsin hoạt động mạnh nhất ở pH:", "o": ["> 8", "1", "6–7", "2–3"], "a": 3, "e": "Bị bất hoạt khi pH > 5.", "t": "Phần 2 · Tiêu hóa – Bài: Giải phẫu sinh lý hệ tiêu hóa"}, {"q": "Đặc điểm nôn trong viêm tụy cấp là:", "o": ["Nôn nhiều, liên tục nhưng không giảm đau", "Nôn ra máu tươi", "Không bao giờ nôn", "Nôn xong đỡ đau"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc viêm tụy cấp"}, {"q": "Nghiệm pháp Murphy dương tính gặp trong:", "o": ["Viêm túi mật", "Loét dạ dày", "Viêm tụy cấp", "Viêm ruột thừa"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Nhận định người bệnh tiêu hóa"}, {"q": "Mốc giải phẫu phân chia xuất huyết tiêu hóa trên và dưới là:", "o": ["Tâm vị", "Môn vị", "Van hồi manh tràng", "Góc Treitz (dây chằng Treitz)"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xuất huyết tiêu hóa"}, {"q": "Sau khi cầm máu thành công, huyết động ổn định, chế độ ăn cho người bệnh XHTH là:", "o": ["Ăn lỏng, nguội, dễ tiêu, chia nhỏ bữa", "Ăn nhiều gia vị cho ngon miệng", "Ăn đặc, nóng", "Nhịn ăn 3 ngày"], "a": 0, "e": "Trong giai đoạn chảy máu/sau can thiệp: nhịn 4–6 giờ.", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xuất huyết tiêu hóa"}, {"q": "Lượng muối khuyến cáo cho người bệnh THA là:", "o": ["Không hạn chế", "< 15 g/ngày", "< 5 g/ngày", "< 10 g/ngày"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc tăng huyết áp"}, {"q": "Người bệnh nhồi máu cơ tim cần tránh táo bón nhằm:", "o": ["Giảm đau bụng", "Tránh rặn làm tăng gánh nặng cho tim", "Tăng hấp thu thuốc", "Giảm cân"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Hội chứng mạch vành cấp"}, {"q": "Trong cấp cứu THA, nên giảm huyết áp trung bình trong giờ đầu:", "o": ["Không hạ", "Về bình thường ngay", "Khoảng 10–15%, không quá 25%", "50%"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc tăng huyết áp"}, {"q": "Trước sốc điện chuyển nhịp có chuẩn bị, người bệnh cần nhịn ăn ít nhất:", "o": ["1 giờ", "24 giờ", "6 giờ", "2 giờ"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Rối loạn nhịp tim"}, {"q": "Phù trong bệnh tim có đặc điểm:", "o": ["Phù vùng thấp, phù trắng, mềm, ấn lõm, không đau", "Phù một bên chân", "Phù cứng, đỏ, đau", "Phù mặt buổi sáng"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Nhận định người bệnh tim mạch"}, {"q": "Nhịp nhanh xoang ở người lớn khi tần số:", "o": ["> 150 ck/phút", "> 100 ck/phút", "< 60 ck/phút", "> 60 ck/phút"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Điện tâm đồ cơ bản"}, {"q": "Furosemid là thuốc lợi tiểu mạnh, chỉ định chính trong:", "o": ["Hạ calci máu", "Phù phổi cấp, phù do tim – gan – thận", "Hạ huyết áp", "Mất nước"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Thuốc tim mạch"}, {"q": "Dấu hiệu gợi ý suy tim nặng lên mà người bệnh cần tự theo dõi tại nhà là:", "o": ["Ngủ nhiều", "Đi tiểu nhiều", "Tăng cân nhanh, phù tăng, khó thở tăng", "Ăn ngon miệng"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc suy tim"}, {"q": "Tiếng tim T1 được tạo ra do:", "o": ["Tâm nhĩ co bóp", "Đóng van động mạch chủ và động mạch phổi", "Mở van 2 lá", "Đóng van 2 lá và van 3 lá"], "a": 3, "e": "T2 do đóng van động mạch chủ và động mạch phổi.", "t": "Phần 3 · Tim mạch – Bài: Giải phẫu sinh lý tuần hoàn"}, {"q": "Marker sinh học đặc hiệu cơ tim dùng chẩn đoán nhồi máu cơ tim là:", "o": ["Troponin T, I", "CRP", "Amylase", "ALT"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Hội chứng mạch vành cấp"}, {"q": "Nhóm ức chế thụ thể AT1 (ví dụ losartan) có ưu điểm hơn ức chế men chuyển là:", "o": ["Không gây ho khan", "Rẻ hơn", "Không cần theo dõi huyết áp", "Tác dụng lợi tiểu mạnh"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Thuốc tim mạch"}, {"q": "Hở van hai lá gây suy tim theo cơ chế:", "o": ["Quá tải thể tích", "Thiếu vitamin B1", "Quá tải áp lực", "Giảm khối lượng tuần hoàn"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Sinh lý bệnh suy tim, THA, mạch vành"}, {"q": "Khi mắc điện cực ngoại biên, kẹp màu ĐỎ gắn vào:", "o": ["Tay trái", "Chân phải", "Tay phải", "Chân trái"], "a": 2, "e": "Đen: chân phải; xanh dương: tay trái; xanh lá: chân trái.", "t": "Phần 3 · Tim mạch – Bài: Điện tâm đồ cơ bản"}, {"q": "Suy tim giai đoạn 1–2, lượng muối khuyến nghị:", "o": ["Dưới 5 g muối/ngày (Natri < 2000 mg)", "Dưới 1 g muối/ngày", "Không cần hạn chế", "Dưới 10 g muối/ngày"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Dinh dưỡng tim mạch"}, {"q": "Trong thiếu máu thiếu sắt, hạn chế truyền khối hồng cầu, chỉ truyền khi:", "o": ["Hb < 90 g/L", "Hb < 100 g/L", "Hb < 60 g/L và giảm thích nghi với thiếu máu", "Không bao giờ truyền"], "a": 2, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc thiếu máu"}, {"q": "Thiếu máu được xác định khi nồng độ Hb thấp hơn:", "o": ["80 g/L", "100 g/L ở nam, 90 g/L ở nữ", "130 g/L ở nam, 120 g/L ở nữ", "150 g/L ở cả hai giới"], "a": 2, "e": "", "t": "Phần 4 · Huyết học – Bài: Dinh dưỡng bệnh máu"}, {"q": "Quan sát màu sắc da, kết mạc khi khám thiếu máu cần thực hiện dưới:", "o": ["Ánh sáng tự nhiên", "Ánh đèn vàng", "Bóng tối", "Đèn tia cực tím"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Nhận định người bệnh huyết học"}, {"q": "Triệu chứng thực thể thường gặp trong thiếu máu mạn tính là:", "o": ["Da đỏ, niêm mạc hồng", "Gan to", "Vàng da", "Da xanh, niêm mạc nhợt, móng tay khô dễ gãy, tóc khô dễ rụng"], "a": 3, "e": "", "t": "Phần 4 · Huyết học – Bài: Bệnh học thiếu máu"}, {"q": "Nút tiểu cầu (đinh cầm máu Hayem) được hình thành ở giai đoạn:", "o": ["Tan cục máu đông", "Thành mạch", "Đông máu", "Tiểu cầu"], "a": 3, "e": "", "t": "Phần 4 · Huyết học – Bài: Nhóm máu, đông cầm máu"}, {"q": "Phản ứng phản vệ do truyền máu có đặc điểm:", "o": ["Chỉ ngứa nhẹ", "Xảy ra vài phút sau truyền, trụy tim mạch, suy hô hấp, không sốt", "Vàng da sau 1 tuần", "Sốt cao kéo dài nhiều ngày"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Tai biến truyền máu"}, {"q": "Đời sống trung bình của hồng cầu trong máu là:", "o": ["30 ngày", "1 năm", "100–120 ngày", "7–10 ngày"], "a": 2, "e": "", "t": "Phần 4 · Huyết học – Bài: Sinh lý máu"}, {"q": "Độc tính chủ yếu dùng để điều chỉnh liều hóa trị là:", "o": ["Giảm tiểu cầu và bạch cầu trung tính", "Nôn", "Táo bón", "Rụng tóc"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Hóa chất điều trị bệnh máu ác tính"}, {"q": "Triệu chứng lâm sàng điển hình nhất của Lơ-xê-mi kinh dòng hạt là:", "o": ["Đau xương", "Lách to (thường rất to)", "Hạch to", "Phì đại lợi"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc Lơ-xê-mi"}, {"q": "Hấp thu vitamin B12 qua ruột cần có:", "o": ["Sắt", "Vitamin C", "Yếu tố nội (của dạ dày)", "Acid folic"], "a": 2, "e": "", "t": "Phần 4 · Huyết học – Bài: Thuốc điều trị thiếu máu"}, {"q": "Tỷ lệ người Rh dương ở Việt Nam khoảng:", "o": ["85%", "100%", "50%", "99,92%"], "a": 3, "e": "", "t": "Phần 4 · Huyết học – Bài: Nhóm máu, đông cầm máu"}, {"q": "Đa u tủy xương là bệnh tăng sinh ác tính của:", "o": ["Hồng cầu", "Tương bào (dòng plasmo) trong tủy xương", "Tiểu cầu", "Bạch cầu đa nhân"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc đa u tủy xương"}, {"q": "Đặc điểm của thuốc hóa chất điều trị ung thư là:", "o": ["Hệ số an toàn điều trị thấp, nhiều tác dụng không mong muốn nặng", "Không độc", "Không cần dự phòng tác dụng phụ", "Hệ số an toàn điều trị cao"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Hóa chất điều trị bệnh máu ác tính"}], [{"q": "Tiêu chuẩn vàng để chẩn đoán xác định và đánh giá mức độ nặng COPD là:", "o": ["X-quang phổi", "CT scan ngực", "Đo chức năng thông khí (hô hấp ký)", "Khí máu động mạch"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc BPTNMT"}, {"q": "Hội chứng 3 giảm trong tràn dịch màng phổi gồm:", "o": ["Gõ đục, rung thanh mất (giảm), RRPN giảm", "Gõ đục, rung thanh tăng, có ran nổ", "Gõ vang, rung thanh giảm, RRPN giảm", "Gõ trong, rung thanh giảm, ran rít"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc tràn dịch màng phổi"}, {"q": "Thể tích khí lưu thông (TV) bình thường ở người trưởng thành khoảng:", "o": ["400–500 ml", "150 ml", "3000 ml", "1100–1500 ml"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Giải phẫu sinh lý hệ hô hấp"}, {"q": "Sau khi ộc mủ, người bệnh áp xe phổi có nhiệt độ đột ngột tăng trở lại chứng tỏ:", "o": ["Bệnh đã khỏi", "Mủ dẫn lưu kém, ứ lại trong phổi", "Dị ứng kháng sinh", "Tràn khí màng phổi"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc áp xe phổi"}, {"q": "Tiêu chuẩn vàng chẩn đoán xác định giãn phế quản là:", "o": ["Chụp cắt lớp vi tính lồng ngực lớp mỏng, độ phân giải cao", "Soi phế quản", "Đo chức năng hô hấp", "X-quang phổi thường"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc giãn phế quản"}, {"q": "Khó thở trong cơn hen phế quản điển hình là:", "o": ["Khó thở kiểu Kussmaul", "Khó thở nhanh, thì thở vào", "Khó thở liên tục cả ngày đêm", "Khó thở chậm, thì thở ra, có tiếng cò cử"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc hen phế quản"}, {"q": "Chống chỉ định của thở máy không xâm nhập là:", "o": ["Sau rút nội khí quản", "Ngừng thở, rối loạn ý thức, không hợp tác, tràn khí màng phổi chưa dẫn lưu", "Đợt cấp COPD", "Phù phổi cấp do tim"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Thở máy không xâm nhập, thở oxy"}, {"q": "Mỗi gam Hb có khả năng gắn khoảng bao nhiêu ml oxy?", "o": ["5 ml", "20 ml", "0,3 ml", "1,34 ml"], "a": 3, "e": "100 ml máu có ~15 g Hb → ~20 ml O2.", "t": "Phần 1 · Hô hấp – Bài: Giải phẫu sinh lý hệ hô hấp"}, {"q": "Dấu hiệu báo trước của cơn hen phế quản thường là:", "o": ["Sốt cao, rét run", "Hắt hơi, sổ mũi, ho khan", "Đau ngực dữ dội", "Ho ra máu"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc hen phế quản"}, {"q": "Áp lực hút dẫn lưu màng phổi ở người lớn thường đặt:", "o": ["–40 đến –50 cmH2O", "–5 đến –10 cmH2O", "–100 cmH2O", "–20 đến –25 cmH2O"], "a": 3, "e": "Trẻ em: –10 đến –20 cmH2O.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc dẫn lưu màng phổi"}, {"q": "Hình ảnh X-quang ở giai đoạn thành hang của áp xe phổi là:", "o": ["Phổi tăng sáng, cơ hoành hạ thấp", "Hang tròn/bầu dục, bờ dày, có mức hơi – nước", "Đường ray song song", "Mờ góc sườn hoành"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc áp xe phổi"}, {"q": "Lipid trong khẩu phần người bệnh COPD chiếm khoảng bao nhiêu % tổng năng lượng?", "o": ["10–15%", "55–65%", "30–45%", "15–20%"], "a": 2, "e": "Trong đó acid béo không no chiếm 2/3.", "t": "Phần 1 · Hô hấp – Bài: Dinh dưỡng BPTNMT"}, {"q": "Kiểm tra bình MDI hết thuốc bằng cách thả vào bát nước, bình hết thuốc khi:", "o": ["Nổi và nằm ngang trên mặt nước", "Chìm nghiêng", "Chìm thẳng đứng", "Lơ lửng giữa nước"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Dụng cụ phân phối thuốc hô hấp"}, {"q": "Nhu cầu protein khuyến nghị cho người bệnh COPD là:", "o": ["1,2–1,7 g/kg/ngày", "0,8–1,0 g/kg/ngày", "0,6–0,8 g/kg/ngày", "2,5–3 g/kg/ngày"], "a": 0, "e": "1,2–1,7 g/kg hoặc 20% tổng năng lượng; 1,5 g/kg nếu dùng steroid liều cao.", "t": "Phần 1 · Hô hấp – Bài: Dinh dưỡng BPTNMT"}, {"q": "Trường hợp viêm phổi có sốc nhiễm khuẩn, điều trị bao gồm:", "o": ["Hạn chế dịch tuyệt đối", "Chọc tháo dịch màng phổi", "Bù dịch, dùng vận mạch, đặt đường truyền tĩnh mạch trung tâm theo dõi CVP", "Chỉ dùng kháng sinh đường uống"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc viêm phổi"}, {"q": "Đờm lỏng, có bọt, màu hồng gợi ý:", "o": ["Nhồi máu phổi", "Hen phế quản", "Lao phổi", "Phù phổi cấp"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Nhận định người bệnh hô hấp"}, {"q": "Để phòng đợt cấp, người bệnh COPD nên được tư vấn tiêm phòng:", "o": ["Cúm và phế cầu", "Viêm gan B", "Uốn ván", "BCG"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc BPTNMT"}, {"q": "Thuốc cường β2 tác dụng dài (LABA) có thời gian tác dụng khoảng:", "o": ["12 giờ", "24–48 giờ", "6–8 giờ", "3–6 giờ"], "a": 0, "e": "LABA (salmeterol, formoterol) tác dụng kéo dài khoảng 12 giờ, phối hợp corticoid để dự phòng.", "t": "Phần 1 · Hô hấp – Bài: Thuốc điều trị hen phế quản"}, {"q": "Người bệnh TRÀN KHÍ màng phổi có dẫn lưu, khi di chuyển đi làm xét nghiệm mà không có hệ thống hút di động thì:", "o": ["Không kẹp sonde", "Kẹp sonde", "Rút sonde", "Nâng bình cao hơn ngực"], "a": 0, "e": "Không kẹp để tránh tràn khí dưới da, suy hô hấp; người bệnh tràn dịch thì kẹp.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc dẫn lưu màng phổi"}, {"q": "Cơ chế gây loét của NSAID chủ yếu là:", "o": ["Tăng tưới máu niêm mạc", "Tăng tiết chất nhầy", "Ức chế tổng hợp prostaglandin, giảm hàng rào bảo vệ niêm mạc", "Tăng tổng hợp prostaglandin"], "a": 2, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Sinh lý bệnh tiêu hóa"}, {"q": "Triệu chứng đau bụng điển hình trong viêm tụy cấp là:", "o": ["Đau hố chậu phải", "Đau quặn từng cơn hạ vị", "Đau liên tục vùng thượng vị/quanh rốn, lan ra sau lưng", "Đau hạ sườn phải lan lên vai phải"], "a": 2, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc viêm tụy cấp"}, {"q": "Nhu cầu năng lượng cho người bệnh xơ gan là:", "o": ["30–35 kcal/kg/ngày", "15–20 kcal/kg/ngày", "45–50 kcal/kg/ngày", "60 kcal/kg/ngày"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Dinh dưỡng xơ gan, VTC, loét DDTT"}, {"q": "Tư thế cho người bệnh XHTH có tụt huyết áp là:", "o": ["Fowler", "Đầu thấp chân cao", "Nằm sấp", "Ngồi dậy"], "a": 1, "e": "Nằm đầu bằng, nghiêng đầu khi nôn để tránh sặc.", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xuất huyết tiêu hóa"}, {"q": "Thành bụng co cứng, không di động theo nhịp thở thường gặp trong:", "o": ["Táo bón", "Cổ trướng ít", "Béo phì", "Viêm phúc mạc"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Nhận định người bệnh tiêu hóa"}, {"q": "Nguyên nhân hay gặp nhất của xuất huyết tiêu hóa trên là:", "o": ["Polyp đại tràng", "Loét tá tràng, viêm dạ dày tá tràng", "Ung thư thực quản", "Trĩ"], "a": 1, "e": "Mỗi nguyên nhân chiếm 20–30%.", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xuất huyết tiêu hóa"}, {"q": "Xét nghiệm biểu hiện suy tế bào gan là:", "o": ["Phosphatase kiềm tăng", "Bạch cầu tăng", "ALT, AST tăng", "Albumin giảm, prothrombin giảm, tỷ lệ A/G đảo ngược"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xơ gan"}, {"q": "Thực quản dài khoảng:", "o": ["50 cm", "25 cm", "10 cm", "1 m"], "a": 1, "e": "Đoạn cổ ~3 cm, ngực ~20 cm, bụng ~2 cm.", "t": "Phần 2 · Tiêu hóa – Bài: Giải phẫu sinh lý hệ tiêu hóa"}, {"q": "Nhóm máu có tỷ lệ loét dạ dày tá tràng cao hơn rõ rệt là:", "o": ["Nhóm A", "Nhóm O", "Nhóm AB", "Nhóm B"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Sinh lý bệnh tiêu hóa"}, {"q": "Biểu hiện thuộc hội chứng SUY TẾ BÀO GAN là:", "o": ["Giãn tĩnh mạch thực quản", "Lách to", "Tuần hoàn bàng hệ", "Sao mạch, bàn tay son, phù, xuất huyết dưới da"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xơ gan"}, {"q": "Dung dịch được khuyến cáo ưu tiên bù dịch trong viêm tụy cấp là:", "o": ["Albumin", "Natri bicarbonat", "Glucose 5%", "Ringer lactat"], "a": 3, "e": "Bù dịch sớm, tích cực trong 12–24 giờ đầu.", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc viêm tụy cấp"}, {"q": "Phương pháp có giá trị chẩn đoán nhất loét dạ dày tá tràng là:", "o": ["X-quang có thuốc cản quang", "Nội soi dạ dày tá tràng ống mềm", "Siêu âm bụng", "Xét nghiệm dịch vị"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc loét dạ dày tá tràng"}, {"q": "Thuốc kháng acid chứa nhôm hydroxyd thường gây tác dụng phụ:", "o": ["Táo bón", "Tăng huyết áp", "Hạ đường huyết", "Tiêu chảy"], "a": 0, "e": "Magnesi hydroxyd thường gây tiêu chảy.", "t": "Phần 2 · Tiêu hóa – Bài: Thuốc điều trị bệnh tiêu hóa"}, {"q": "Nhiệt độ thức ăn phù hợp cho người bệnh loét dạ dày tá tràng là khoảng:", "o": ["70–80°C", "40–50°C", "Càng nóng càng tốt", "10–20°C"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Dinh dưỡng xơ gan, VTC, loét DDTT"}, {"q": "Yếu tố nguy cơ bệnh mạch vành KHÔNG thay đổi được là:", "o": ["Hút thuốc lá", "Tăng huyết áp", "Tuổi cao, tiền sử gia đình", "Béo phì"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Hội chứng mạch vành cấp"}, {"q": "Điện cực V4 được gắn ở:", "o": ["Giao điểm đường trung đòn trái với KLS 5", "KLS 4 cạnh phải xương ức", "Đường nách trước trái", "Giữa V1 và V2"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Điện tâm đồ cơ bản"}, {"q": "Nitroglycerin viên ngậm dưới lưỡi dùng để:", "o": ["Lợi tiểu", "Chống đông", "Cắt cơn đau thắt ngực", "Hạ đường huyết"], "a": 2, "e": "Cần theo dõi tụt huyết áp.", "t": "Phần 3 · Tim mạch – Bài: Thuốc tim mạch"}, {"q": "Khi nút xoang tổn thương, nút Tawara điều khiển nhịp thì:", "o": ["Tim đập chậm hơn", "Tim ngừng đập", "Tim đập nhanh hơn", "Nhịp tim không đổi"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Giải phẫu sinh lý tuần hoàn"}, {"q": "Tốc độ giấy ghi điện tâm đồ chuẩn là:", "o": ["25 mm/giây", "100 mm/giây", "10 mm/giây", "50 mm/giây"], "a": 0, "e": "1 mm = 0,04 giây; 1 mV = 10 mm.", "t": "Phần 3 · Tim mạch – Bài: Điện tâm đồ cơ bản"}, {"q": "Tư thế phù hợp cho người bệnh suy tim nặng khó thở là:", "o": ["Nằm nghiêng trái phẳng", "Nửa nằm nửa ngồi (Fowler)", "Nằm sấp", "Nằm đầu thấp"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc suy tim"}, {"q": "Rối loạn nhịp CHẬM có thể điều trị bằng:", "o": ["Xoa xoang cảnh", "Sốc điện phá rung", "Thuốc, đặt máy tạo nhịp tạm thời/vĩnh viễn", "Ấn nhãn cầu"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Rối loạn nhịp tim"}, {"q": "Thuốc chống tăng huyết áp được lựa chọn cho phụ nữ có thai là:", "o": ["Methyldopa", "Spironolacton", "Captopril", "Losartan"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Thuốc tim mạch"}, {"q": "Suy tim NYHA độ IV có đặc điểm:", "o": ["Hạn chế nhẹ vận động", "Triệu chứng xảy ra ngay cả khi nghỉ ngơi", "Chỉ khó thở khi gắng sức nặng", "Không hạn chế vận động"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc suy tim"}, {"q": "Các biện pháp thích nghi chính của tim khi suy là:", "o": ["Giảm nhịp, co nhỏ tim", "Tăng nhịp, giãn tim, phì đại tim", "Giảm thể tích máu", "Hạ huyết áp tĩnh mạch"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Sinh lý bệnh suy tim, THA, mạch vành"}, {"q": "Biện pháp tái thông mạch vành được ưu tiên hàng đầu trong STEMI là:", "o": ["Bắc cầu chủ vành", "Can thiệp động mạch vành qua da (PCI)", "Chỉ dùng thuốc chống đau", "Tiêu sợi huyết"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Hội chứng mạch vành cấp"}, {"q": "Công thức hạn chế nước uống ở người suy tim có phù:", "o": ["1 lít cố định", "Uống tự do", "Nước tiểu 24h hôm trước + dịch mất bất thường + 300–500 ml", "3 lít/ngày"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Dinh dưỡng tim mạch"}, {"q": "Tĩnh mạch cổ nổi, phản hồi gan – tĩnh mạch cổ dương tính gợi ý:", "o": ["Suy tim phải", "Hẹp động mạch chủ", "Viêm phổi", "Tăng huyết áp"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Nhận định người bệnh tim mạch"}, {"q": "Lần đo huyết áp đầu tiên cần đo ở:", "o": ["Cổ chân", "Tay trái", "Cả hai cánh tay, lấy tay có trị số cao hơn để theo dõi", "Tay phải"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc tăng huyết áp"}, {"q": "Nguyên nhân thường gặp nhất của phản ứng tan máu cấp trong lòng mạch là:", "o": ["Dị ứng protein", "Máu bị lạnh", "Truyền quá chậm", "Truyền không hòa hợp nhóm ABO/Rh, chủ yếu do sai sót hành chính"], "a": 3, "e": "", "t": "Phần 4 · Huyết học – Bài: Tai biến truyền máu"}, {"q": "Viên sắt nên uống vào thời điểm:", "o": ["Trước khi ngủ với sữa", "Trước ăn 1 giờ hoặc sau ăn 1–2 giờ, không uống với nước chè", "Ngay trong bữa ăn với nước chè", "Bất kỳ lúc nào với cà phê"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Thuốc điều trị thiếu máu"}, {"q": "Đa u tủy xương thường gặp ở:", "o": ["Phụ nữ có thai", "Người cao tuổi", "Trẻ em", "Thanh niên"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc đa u tủy xương"}, {"q": "Người Rh âm nhận máu Rh dương LẦN ĐẦU thường:", "o": ["Hầu như không có tai biến, nhưng các lần sau có thể tai biến", "Không bao giờ tạo kháng thể", "Tai biến nặng ngay", "Tử vong"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Nhóm máu, đông cầm máu"}, {"q": "Người có nhóm máu O có đặc điểm:", "o": ["Chỉ có kháng nguyên A", "Không có kháng nguyên A, B; huyết thanh có cả anti A và anti B", "Không có kháng thể trong huyết thanh", "Có kháng nguyên A và B trên hồng cầu"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Nhóm máu, đông cầm máu"}, {"q": "Số lượng tiểu cầu bình thường trong máu ngoại vi là:", "o": ["150.000–300.000/mm³", "15.000–30.000/mm³", "4–5 triệu/mm³", "1–2 triệu/mm³"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Sinh lý máu"}, {"q": "Lơ-xê-mi kinh dòng hạt giai đoạn mạn tính được điều trị đơn hóa trị bằng:", "o": ["Vincristine", "Sắt", "Corticoid đơn thuần", "Imatinib (Gleevec) hoặc hydroxyurea"], "a": 3, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc Lơ-xê-mi"}, {"q": "Người bệnh lơ-xê-mi bị chảy máu chân răng, điều dưỡng hướng dẫn:", "o": ["Súc miệng nước nóng", "Dùng tăm xỉa răng", "Đánh răng bằng bàn chải cứng", "Súc miệng nước muối lạnh, chải răng bằng bàn chải mềm"], "a": 3, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc Lơ-xê-mi"}, {"q": "Thực hiện truyền máu theo quy chế, điều dưỡng phải:", "o": ["Truyền nhanh để tiết kiệm thời gian", "Định nhóm máu tại giường, đối chiếu thông tin người bệnh và túi máu", "Chỉ cần đọc tên trên phiếu", "Không cần theo dõi"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc thiếu máu"}, {"q": "Thực phẩm giàu sắt nên dùng cho người thiếu máu là:", "o": ["Gạo lứt", "Thịt bò, hàu, sò, tôm", "Trà xanh", "Cà phê"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Dinh dưỡng bệnh máu"}, {"q": "Móng tay giòn, dễ gãy, chân móng bẹt hoặc lõm thường gặp trong:", "o": ["Mất máu cấp", "Đa u tủy", "Lơ-xê-mi kinh", "Thiếu máu thiếu sắt mạn tính"], "a": 3, "e": "", "t": "Phần 4 · Huyết học – Bài: Nhận định người bệnh huyết học"}, {"q": "Thuốc hóa chất cơ sở điều trị tấn công lơ-xê-mi cấp dòng lympho bao gồm:", "o": ["Sắt và acid folic", "Imatinib đơn thuần", "Vincristine và prednisolone", "Aspirin"], "a": 2, "e": "", "t": "Phần 4 · Huyết học – Bài: Hóa chất điều trị bệnh máu ác tính"}, {"q": "Thiếu máu mức độ VỪA khi huyết sắc tố:", "o": ["< 30 g/L", "30 đến < 60 g/L", "60 đến < 90 g/L", "90–120 g/L"], "a": 2, "e": "", "t": "Phần 4 · Huyết học – Bài: Bệnh học thiếu máu"}], [{"q": "Khi người bệnh COPD khó thở, hướng dẫn ăn uống nào sau đây là ĐÚNG?", "o": ["Ăn 2 bữa lớn mỗi ngày", "Uống nhiều nước trong bữa ăn", "Nghỉ ngơi trước ăn, ăn chậm, chia 4–6 bữa/ngày", "Nằm đầu thấp khi ăn"], "a": 2, "e": "Nghỉ trước ăn, ăn chậm miếng nhỏ, ngồi thẳng, chia 4–6 bữa.", "t": "Phần 1 · Hô hấp – Bài: Dinh dưỡng BPTNMT"}, {"q": "Nhu cầu năng lượng khuyến nghị cho người bệnh COPD là:", "o": ["15–20 kcal/kg/ngày", "40–45 kcal/kg/ngày", "25–35 kcal/kg/ngày", "50 kcal/kg/ngày"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Dinh dưỡng BPTNMT"}, {"q": "Yếu tố thuận lợi gây áp xe phổi là:", "o": ["Ăn nhiều rau xanh", "Uống nhiều nước", "Sau phẫu thuật tai mũi họng – răng hàm mặt, đái tháo đường, nghiện rượu", "Tập thể dục đều đặn"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc áp xe phổi"}, {"q": "Trong tràn dịch màng phổi do lao, loại tế bào chiếm ưu thế trong dịch là:", "o": ["Bạch cầu đa nhân trung tính", "Hồng cầu", "Bạch cầu lympho", "Bạch cầu ái toan"], "a": 2, "e": "Mủ màng phổi: đa nhân trung tính chiếm đa số.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc tràn dịch màng phổi"}, {"q": "Nên khuyên người bệnh COPD (chưa có suy tim) uống bao nhiêu nước/ngày để làm loãng đờm?", "o": ["Hạn chế dưới 1 lít", "3–4 lít", "0,5 lít", "1,5–2 lít"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc BPTNMT"}, {"q": "Vị trí đặt dẫn lưu trong tràn khí màng phổi thường là:", "o": ["Khoang liên sườn 7–8 đường nách giữa", "Khoang liên sườn 10 đường nách sau", "Khoang liên sườn 2–3 đường giữa đòn", "Mỏm mũi ức"], "a": 2, "e": "Tràn dịch/tràn máu: KLS 7–8 đường nách giữa.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc dẫn lưu màng phổi"}, {"q": "Khi dùng viên theophylin giải phóng chậm, điều dưỡng cần hướng dẫn người bệnh:", "o": ["Ngậm dưới lưỡi", "Không được bẻ, nhai hoặc nghiền viên", "Nghiền ra hòa nước", "Nhai kỹ trước khi nuốt"], "a": 1, "e": "Viên giải phóng chậm uống 200–400 mg/12 giờ, không được bẻ, nhai, nghiền.", "t": "Phần 1 · Hô hấp – Bài: Thuốc điều trị hen phế quản"}, {"q": "Xoang cạnh mũi lớn nhất là:", "o": ["Xoang hàm trên", "Xoang sàng", "Xoang trán", "Xoang bướm"], "a": 0, "e": "Xoang hàm trên nằm trong xương hàm trên, đổ vào ngách mũi giữa.", "t": "Phần 1 · Hô hấp – Bài: Giải phẫu sinh lý hệ hô hấp"}, {"q": "Dấu hiệu của cơn hen NGUY KỊCH là:", "o": ["Nói được từng câu", "Phổi im lặng, ngủ gà/lú lẫn, nhịp tim chậm", "Nhịp thở > 30 lần/phút, kích thích", "Mạch > 120 lần/phút"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc hen phế quản"}, {"q": "Người bệnh giãn phế quản có tổn thương thùy dưới phổi, khi dẫn lưu tư thế cần đặt:", "o": ["Ngồi thẳng", "Nằm đầu cao 45°", "Nằm đầu dốc (đầu thấp)", "Nằm sấp phẳng"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc giãn phế quản"}, {"q": "Hội chứng đông đặc phổi trong viêm phổi gồm:", "o": ["Gõ đục, rung thanh tăng, RRPN giảm hoặc mất", "Gõ đục, rung thanh mất, RRPN giảm", "Gõ vang, rung thanh giảm, RRPN tăng", "Gõ trong, rung thanh bình thường"], "a": 0, "e": "Phân biệt với hội chứng 3 giảm của tràn dịch màng phổi.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc viêm phổi"}, {"q": "Test hồi phục phế quản dương tính trong hen khi FEV1 sau test tăng:", "o": ["≥ 5% và 50 ml", "≥ 12% và 200 ml", "≥ 30% và 500 ml", "≥ 50%"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc hen phế quản"}, {"q": "Dụng cụ HandiHaler dùng để phân bố thuốc:", "o": ["Budesonid", "Tiotropium bromid (Spiriva)", "Salbutamol", "Formoterol"], "a": 1, "e": "Aerolizer phân bố formoterol fumarat.", "t": "Phần 1 · Hô hấp – Bài: Dụng cụ phân phối thuốc hô hấp"}, {"q": "Viêm phế quản mạn được định nghĩa khi ho, khạc đờm kéo dài:", "o": ["Ít nhất 3 tháng/năm, trong ít nhất 2 năm liên tiếp", "Ít nhất 6 tháng liên tục", "Ít nhất 2 tháng/năm trong 3 năm", "Ít nhất 1 tháng/năm trong 1 năm"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc BPTNMT"}, {"q": "Tràn dịch màng phổi là dịch tiết khi tỷ lệ protein dịch màng phổi/protein huyết thanh:", "o": ["< 0,5", "≥ 0,5", "< 0,3", "≥ 2"], "a": 1, "e": "Chỉ cần thỏa ≥ 1/3 tiêu chuẩn Light.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc tràn dịch màng phổi"}, {"q": "Nhược điểm chính của bình hít định liều (MDI) là:", "o": ["Không chứa chất đẩy", "Khó mang theo", "Cần phối hợp tốt giữa động tác ấn bình và nhịp hít vào", "Nguy cơ nhiễm khuẩn cao"], "a": 2, "e": "Buồng đệm giúp khắc phục nhược điểm này.", "t": "Phần 1 · Hô hấp – Bài: Dụng cụ phân phối thuốc hô hấp"}, {"q": "Thể tích khí cặn (RV) là:", "o": ["Khí thở ra thêm sau thở ra bình thường", "Khí hít vào thêm sau hít vào bình thường", "Khí còn lại trong phổi sau khi đã thở ra hết sức", "Khí lưu chuyển mỗi lần thở bình thường"], "a": 2, "e": "RV bình thường khoảng 1000–1200 ml.", "t": "Phần 1 · Hô hấp – Bài: Giải phẫu sinh lý hệ hô hấp"}, {"q": "Khó thở kiểu Cheyne-Stokes thường gặp trong:", "o": ["Nhiễm toan ceton", "Viêm thanh quản", "Hen phế quản", "Tổn thương trung tâm hô hấp (nhiễm độc nặng, chấn thương sọ não)"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Nhận định người bệnh hô hấp"}, {"q": "Nhiệt độ bình đốt của hệ thống làm ẩm máy thở thường là:", "o": ["40–45°C", "32–37°C", "50°C", "20–25°C"], "a": 1, "e": "Giúp làm ẩm khí thở, tránh khô đờm gây tắc.", "t": "Phần 1 · Hô hấp – Bài: Thở máy không xâm nhập, thở oxy"}, {"q": "Khi người bệnh XHTH nặng, điều dưỡng nên thiết lập:", "o": ["Chỉ cần cho uống nước", "2 đường truyền tĩnh mạch ngoại vi lớn", "Đặt sonde tiểu trước tiên", "1 đường truyền nhỏ ở mu tay"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xuất huyết tiêu hóa"}, {"q": "Amylase/lipase máu có giá trị chẩn đoán viêm tụy cấp khi tăng:", "o": ["Bất kỳ mức tăng nào", "≥ 3 lần giá trị bình thường", "Gấp 10 lần mới có ý nghĩa", "Gấp 1,5 lần"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc viêm tụy cấp"}, {"q": "Vi khuẩn Helicobacter pylori tồn tại được trong môi trường acid dạ dày nhờ:", "o": ["Sống trong máu", "Sinh nha bào", "Men urease tạo NH3 trung hòa acid quanh nó", "Vỏ bọc dày"], "a": 2, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Sinh lý bệnh tiêu hóa"}, {"q": "Hội chứng TĂNG ÁP LỰC TĨNH MẠCH CỬA trong xơ gan biểu hiện:", "o": ["Vàng da, phù chân", "Sao mạch, bàn tay son", "Chảy máu chân răng", "Cổ chướng, lách to, tuần hoàn bàng hệ cửa – chủ, XHTH"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xơ gan"}, {"q": "Điểm Mac Burney là điểm:", "o": ["Giữa rốn và mũi ức", "Ngay dưới mũi ức", "Gặp nhau của bờ ngoài cơ thẳng to và bờ sườn phải", "Chia 1/3 ngoài – 2/3 trong đường nối rốn với gai chậu trước trên phải"], "a": 3, "e": "Đau trong viêm ruột thừa.", "t": "Phần 2 · Tiêu hóa – Bài: Nhận định người bệnh tiêu hóa"}, {"q": "Nguyên nhân chiếm tỷ lệ cao nhất gây xơ gan theo giáo trình là:", "o": ["Thuốc", "Viêm gan virus (B, C…)", "Rượu", "Ký sinh trùng"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xơ gan"}, {"q": "Đau do loét HÀNH TÁ TRÀNG điển hình là:", "o": ["Đau ngay sau ăn", "Đau liên tục không liên quan bữa ăn", "Đau khi đói, đỡ đau sau ăn", "Đau về đêm khi no"], "a": 2, "e": "Loét dạ dày thường đau ngay sau ăn.", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc loét dạ dày tá tràng"}, {"q": "Liều omeprazol điều trị loét dạ dày tá tràng thường dùng là:", "o": ["5 mg/ngày", "20–40 mg/ngày trong 4–8 tuần", "200 mg/ngày", "1 g/ngày"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Thuốc điều trị bệnh tiêu hóa"}, {"q": "Thuốc kháng acid magnesi hydroxyd chống chỉ định ở người:", "o": ["Loét tá tràng", "Suy chức năng thận nặng", "Táo bón", "Trào ngược dạ dày thực quản"], "a": 1, "e": "Nguy cơ tăng magnesi máu.", "t": "Phần 2 · Tiêu hóa – Bài: Thuốc điều trị bệnh tiêu hóa"}, {"q": "Nguyên nhân chính gây viêm tụy cấp (khoảng 80%) trên thế giới là:", "o": ["Tăng canxi máu", "Thuốc và chấn thương", "Virus", "Rượu và sỏi"], "a": 3, "e": "Tại Việt Nam còn do giun chui ống mật tụy.", "t": "Phần 2 · Tiêu hóa – Bài: Dinh dưỡng xơ gan, VTC, loét DDTT"}, {"q": "Sucralfat có tác dụng:", "o": ["Trung hòa acid", "Ức chế bơm proton", "Gặp HCl tạo lớp dính quánh bao phủ ổ loét", "Diệt HP"], "a": 2, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc loét dạ dày tá tràng"}, {"q": "Người bệnh xơ gan có cổ trướng cần hạn chế natri ở mức khoảng:", "o": ["Không cần hạn chế", "60 mmol/ngày", "20 mmol/ngày", "150 mmol/ngày"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Dinh dưỡng xơ gan, VTC, loét DDTT"}, {"q": "Yếu tố nội của dạ dày cần thiết cho sự hấp thu:", "o": ["Acid folic", "Sắt", "Canxi", "Vitamin B12 ở hồi tràng"], "a": 3, "e": "Thiếu yếu tố nội → thiếu máu ác tính.", "t": "Phần 2 · Tiêu hóa – Bài: Giải phẫu sinh lý hệ tiêu hóa"}, {"q": "Spironolacton là thuốc lợi tiểu giữ kali, KHÔNG nên phối hợp tùy tiện với ức chế men chuyển vì nguy cơ:", "o": ["Hạ kali máu", "Tăng kali máu", "Hạ natri", "Tăng đường huyết"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Thuốc tim mạch"}, {"q": "Theo NYHA, người bệnh khỏe khi nghỉ, vận động NHẸ đã có triệu chứng thuộc:", "o": ["Độ II", "Độ IV", "Độ I", "Độ III"], "a": 3, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc suy tim"}, {"q": "Ngưỡng chẩn đoán THA khi người bệnh TỰ ĐO tại nhà là:", "o": ["≥ 130/80 mmHg", "≥ 140/90 mmHg", "≥ 135/85 mmHg", "≥ 120/80 mmHg"], "a": 2, "e": "Holter 24h: ≥ 130/80 mmHg.", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc tăng huyết áp"}, {"q": "Suy tim tâm thu (EF giảm) khi phân số tống máu thất trái:", "o": ["60–70%", "≥ 50%", "< 40%", "> 80%"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc suy tim"}, {"q": "Cơn tăng huyết áp khi trị số huyết áp:", "o": ["≥ 160/100 mmHg", "≥ 180 và/hoặc ≥ 120 mmHg", "≥ 140/90 mmHg", "≥ 200/130 mmHg mới gọi"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc tăng huyết áp"}, {"q": "Độc tính của digoxin dễ xảy ra khi:", "o": ["Hạ đường huyết", "Tăng kali máu", "Hạ kali máu", "Tăng natri máu"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Thuốc tim mạch"}, {"q": "Sau can thiệp mạch vành qua đường động mạch ĐÙI, người bệnh cần:", "o": ["Nghỉ tại giường tối thiểu 6 giờ, không co chân bên chọc mạch", "Ngồi dậy tập thể dục", "Đi lại ngay", "Co duỗi chân liên tục"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Hội chứng mạch vành cấp"}, {"q": "Người bệnh đặt máy tạo nhịp được hướng dẫn dùng điện thoại di động cách vị trí đặt máy ít nhất:", "o": ["1 m", "5 cm", "20 cm", "2 cm"], "a": 2, "e": "Luôn mang thẻ máy tạo nhịp khi qua cửa an ninh.", "t": "Phần 3 · Tim mạch – Bài: Rối loạn nhịp tim"}, {"q": "Điện cực V1 được gắn ở:", "o": ["Đường nách giữa trái", "Giao điểm đường trung đòn trái và KLS 5", "Khoang liên sườn 4 cạnh trái xương ức", "Khoang liên sườn 4 cạnh phải xương ức"], "a": 3, "e": "", "t": "Phần 3 · Tim mạch – Bài: Điện tâm đồ cơ bản"}, {"q": "Thiếu vitamin nào có thể gây suy tim (bệnh Beri-Beri)?", "o": ["Vitamin D", "Vitamin C", "Vitamin A", "Vitamin B1"], "a": 3, "e": "", "t": "Phần 3 · Tim mạch – Bài: Sinh lý bệnh suy tim, THA, mạch vành"}, {"q": "Phù kèm khó thở dữ dội, ho khạc bọt hồng, hốt hoảng là dấu hiệu:", "o": ["Phù phổi cấp", "Hội chứng thận hư", "Xơ gan", "Suy tim phải mạn"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Nhận định người bệnh tim mạch"}, {"q": "Thực phẩm KHÔNG nên dùng cho người bệnh suy tim là:", "o": ["Rau ngót, chuối", "Mỳ chính, rượu bia, cà phê", "Cá hồi", "Khoai tây"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Dinh dưỡng tim mạch"}, {"q": "Huyết áp tâm thu bình thường dao động trong khoảng:", "o": ["90–140 mmHg", "50–70 mmHg", "60–90 mmHg", "140–180 mmHg"], "a": 0, "e": "HA tâm trương bình thường 60–90 mmHg.", "t": "Phần 3 · Tim mạch – Bài: Giải phẫu sinh lý tuần hoàn"}, {"q": "Ngoại tâm thu thất có đặc điểm:", "o": ["Mất sóng P", "Sóng P đến sớm có QRS bình thường", "QRS đến sớm, giãn rộng ≥ 0,12 s, méo mó, thường có nghỉ bù", "QRS hẹp giống QRS cơ sở"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Điện tâm đồ cơ bản"}, {"q": "Lỗ nhĩ – thất trái có van:", "o": ["Van 2 lá", "Van động mạch chủ", "Van 3 lá", "Van tổ chim động mạch phổi"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Giải phẫu sinh lý tuần hoàn"}, {"q": "Khi buộc phải truyền máu khác nhóm (theo quy tắc tối thiểu), lượng máu truyền không quá:", "o": ["100 ml", "1000 ml", "500 ml", "250 ml"], "a": 3, "e": "Truyền chậm và theo dõi chặt.", "t": "Phần 4 · Huyết học – Bài: Nhóm máu, đông cầm máu"}, {"q": "Lưỡi đỏ lừ, dày lên gặp trong:", "o": ["Thiếu máu Biermer (thiếu B12)", "Mất máu cấp", "Tan máu", "Thiếu máu thiếu sắt"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Nhận định người bệnh huyết học"}, {"q": "Triệu chứng thường gặp của đa u tủy xương là:", "o": ["Lách rất to", "Đau xương (cột sống, sườn, chậu), dễ gãy xương bệnh lý", "Ho ra máu", "Vàng da"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc đa u tủy xương"}, {"q": "Chế độ ăn cho người bệnh lơ-xê-mi đang suy tủy sau hóa trị cần chú trọng:", "o": ["Ăn gỏi, ăn tái", "Ăn rau sống nhiều", "Nhịn ăn", "Ăn chín, uống sôi, không ăn thực phẩm ôi thiu"], "a": 3, "e": "Phòng nhiễm khuẩn khi bạch cầu giảm.", "t": "Phần 4 · Huyết học – Bài: Chăm sóc Lơ-xê-mi"}, {"q": "Thiếu máu thiếu sắt có đặc điểm hồng cầu:", "o": ["Hồng cầu nhỏ (MCV < 80 fl), nhược sắc", "Hồng cầu to, bình sắc", "Hồng cầu hình liềm", "Hồng cầu bình thường"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Bệnh học thiếu máu"}, {"q": "Nguyên nhân gây thiếu máu thiếu sắt do mất máu mạn tính là:", "o": ["Suy tủy", "Thalassemia", "Sốt rét", "Nhiễm giun móc, kinh nguyệt kéo dài, trĩ"], "a": 3, "e": "", "t": "Phần 4 · Huyết học – Bài: Bệnh học thiếu máu"}, {"q": "Trong máu, huyết tương và huyết cầu chiếm tỷ lệ lần lượt khoảng:", "o": ["70% và 30%", "45% và 55%", "55% và 45%", "90% và 10%"], "a": 2, "e": "", "t": "Phần 4 · Huyết học – Bài: Sinh lý máu"}, {"q": "Lơ-xê-mi cấp điển hình có các hội chứng:", "o": ["Thiếu máu, nhiễm trùng, xuất huyết, thâm nhiễm, viêm loét miệng họng", "Vàng da, cổ trướng", "Chỉ thiếu máu", "Đau xương, suy thận"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc Lơ-xê-mi"}, {"q": "Phản ứng truyền máu CẤP TÍNH là phản ứng xảy ra trong vòng:", "o": ["1 tháng", "1 giờ", "7 ngày", "24 giờ kể từ khi truyền"], "a": 3, "e": "", "t": "Phần 4 · Huyết học – Bài: Tai biến truyền máu"}, {"q": "Hoạt động thể lực cho người bệnh thiếu máu nên:", "o": ["Nghỉ ngơi đủ, tập nhẹ, tăng dần khi thiếu máu cải thiện", "Nằm bất động hoàn toàn", "Tập nặng ngay để tăng tạo máu", "Chạy bộ đường dài"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc thiếu máu"}, {"q": "Chất làm TĂNG hấp thu sắt là:", "o": ["Canxi", "Thuốc kháng acid", "Vitamin C", "Tanin trong chè"], "a": 2, "e": "", "t": "Phần 4 · Huyết học – Bài: Thuốc điều trị thiếu máu"}, {"q": "Khi truyền hóa chất đường tĩnh mạch, nên chọn:", "o": ["Tĩnh mạch nhỏ ở mu chân", "Tĩnh mạch chi trên đường kính lớn hoặc buồng tiêm truyền", "Tĩnh mạch gần khớp", "Tiêm dưới da"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Hóa chất điều trị bệnh máu ác tính"}, {"q": "Thực phẩm nên HẠN CHẾ ở người thiếu máu thiếu sắt vì cản trở hấp thu sắt là:", "o": ["Trà, cà phê, thực phẩm chứa tanin, phytate", "Thịt bò, hàu", "Cam, kiwi", "Trứng, sữa"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Dinh dưỡng bệnh máu"}], [{"q": "Xét nghiệm đờm tìm AFB ở người bệnh giãn phế quản cần làm ít nhất mấy lần để loại trừ lao?", "o": ["2 lần", "1 lần", "3 lần", "5 lần"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc giãn phế quản"}, {"q": "Hen phế quản thường khạc đờm có đặc điểm:", "o": ["Đờm bã đậu", "Đờm dính, lợn cợn hạt (đờm ngọc), khạc xong đỡ khó thở", "Đờm màu đỏ bầm không bọt", "Đờm 4 lớp"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Nhận định người bệnh hô hấp"}, {"q": "Chất surfactant phủ lớp biểu mô phế nang do tế bào nào tiết ra?", "o": ["Tế bào nội mạc mao mạch", "Tế bào phế nang lớn (type II)", "Tế bào phế nang nhỏ (type I)", "Đại thực bào phế nang"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Giải phẫu sinh lý hệ hô hấp"}, {"q": "Ưu điểm chính của dùng thuốc qua đường khí dung – hít là:", "o": ["Thuốc đến trực tiếp đường thở, tác dụng nhanh, giảm tác dụng phụ toàn thân", "Thuốc hấp thu chậm", "Giá rẻ nhất", "Không cần kỹ thuật"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Dụng cụ phân phối thuốc hô hấp"}, {"q": "Trong chăm sóc người bệnh COPD, điều dưỡng cần TRÁNH dùng:", "o": ["Thuốc an thần gây ức chế hô hấp", "Thuốc giãn phế quản", "Thuốc long đờm", "Kháng sinh theo y lệnh"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc BPTNMT"}, {"q": "Nguyên tắc tốt nhất để chống dày dính màng phổi trong tràn dịch do lao là:", "o": ["Chỉ dùng thuốc lao", "Gây dính bằng bột talc", "Nằm nghỉ tuyệt đối", "Chọc tháo hết dịch màng phổi sớm"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc tràn dịch màng phổi"}, {"q": "CPAP là phương thức thở:", "o": ["Áp lực dương liên tục suốt chu kỳ thở", "Thông khí xâm nhập qua nội khí quản", "Áp lực dương 2 mức thở vào và thở ra", "Thở oxy qua gọng kính"], "a": 0, "e": "BiPAP: 2 mức IPAP và EPAP.", "t": "Phần 1 · Hô hấp – Bài: Thở máy không xâm nhập, thở oxy"}, {"q": "Khó thở thì thở RA chậm thường gặp trong:", "o": ["Hen phế quản (co thắt tiểu phế quản)", "Bạch hầu thanh quản", "Viêm yết hầu", "Dị vật thanh quản"], "a": 0, "e": "Khó thở vào gặp ở tổn thương/hẹp đường hô hấp trên.", "t": "Phần 1 · Hô hấp – Bài: Nhận định người bệnh hô hấp"}, {"q": "Khi chọc tháo dịch màng phổi, mỗi lần không nên rút quá:", "o": ["200 ml", "2 lít", "500 ml", "1 lít"], "a": 3, "e": "Chọc tháo dần nhiều lần, mỗi lần ≤ 1 lít.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc tràn dịch màng phổi"}, {"q": "Tác dụng không mong muốn THƯỜNG GẶP của thuốc cường β2 là:", "o": ["Nấm miệng, khàn tiếng", "Tăng kali máu", "Đánh trống ngực, nhịp nhanh, run đầu ngón tay", "Khô miệng, bí đái"], "a": 2, "e": "Thường gặp: đánh trống ngực, nhịp nhanh, run nhẹ đầu ngón tay; hiếm: hạ kali máu, tăng glucose…", "t": "Phần 1 · Hô hấp – Bài: Thuốc điều trị hen phế quản"}, {"q": "Theophylin phối hợp với thuốc cường β2 có thể làm tăng tác dụng không mong muốn nào?", "o": ["Tăng kali máu", "Hạ đường huyết", "Hạ kali máu", "Tăng natri máu"], "a": 2, "e": "Theophylin làm tăng tác dụng phụ hạ kali máu của thuốc cường β2.", "t": "Phần 1 · Hô hấp – Bài: Thuốc điều trị hen phế quản"}, {"q": "Người bệnh COPD dùng corticoid kéo dài cần chú ý bổ sung:", "o": ["Vitamin K", "Sắt và acid folic", "Kali", "Canxi và vitamin D"], "a": 3, "e": "Corticoid làm tăng mất canxi → loãng xương; cần bổ sung canxi, vitamin D.", "t": "Phần 1 · Hô hấp – Bài: Dinh dưỡng BPTNMT"}, {"q": "Triệu chứng có giá trị chẩn đoán áp xe phổi là:", "o": ["Ộc mủ", "Khó thở thì thở ra", "Ho khan", "Đau ngực sau xương ức"], "a": 0, "e": "Có thể ộc 300–500 ml mủ/24 giờ, sau ộc mủ người bệnh dễ chịu hơn.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc áp xe phổi"}, {"q": "Nguyên tắc của dẫn lưu màng phổi là:", "o": ["Kín, 1 chiều, thông, vô khuẩn, an toàn", "Kín và 2 chiều", "Hở, vô khuẩn", "Hở và 2 chiều"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc dẫn lưu màng phổi"}, {"q": "Khi nghe phổi trong cơn hen phế quản thường thấy:", "o": ["Ran nổ khu trú", "Tiếng thổi ống", "Ran rít, ran ngáy khắp hai phế trường", "Tiếng cọ màng phổi"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc hen phế quản"}, {"q": "Liều oxy qua gọng kính thường dùng cho người bệnh COPD là:", "o": ["8–10 lít/phút", "1–3 lít/phút", "5–6 lít/phút", "10–15 lít/phút"], "a": 1, "e": "Thở oxy liều thấp, duy trì SaO2 > 90% (PaO2 > 60 mmHg).", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc BPTNMT"}, {"q": "Điều kiện thuận lợi gây viêm phổi KHÔNG bao gồm:", "o": ["Thời tiết nóng ẩm mùa hè là yếu tố chính", "Suy giảm miễn dịch", "Nghiện rượu, hút thuốc", "Tuổi cao, nằm lâu, thở máy"], "a": 0, "e": "Bệnh thường xảy ra vào mùa đông, thời tiết lạnh.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc viêm phổi"}, {"q": "Triệu chứng hay gặp nhất của giãn phế quản là:", "o": ["Khó thở thì hít vào", "Sốt về chiều", "Đau ngực kiểu màng phổi", "Ho kéo dài, khạc đờm mủ số lượng nhiều"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc giãn phế quản"}, {"q": "Độ acid dịch vị thường TĂNG trong:", "o": ["Loét dạ dày", "Ung thư dạ dày", "Viêm teo dạ dày", "Loét tá tràng"], "a": 3, "e": "Giảm trong loét dạ dày.", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc loét dạ dày tá tràng"}, {"q": "Tế bào viền (tế bào thành) của dạ dày bài tiết:", "o": ["Gastrin", "Pepsinogen", "Chất nhầy", "HCl và yếu tố nội"], "a": 3, "e": "Tế bào chính tiết pepsinogen.", "t": "Phần 2 · Tiêu hóa – Bài: Giải phẫu sinh lý hệ tiêu hóa"}, {"q": "Chăm sóc người bệnh xơ gan có cổ trướng, điều dưỡng cần theo dõi hằng ngày:", "o": ["Phản xạ gân xương", "Chiều cao", "Cân nặng, vòng bụng, lượng dịch vào – ra", "Thị lực"], "a": 2, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xơ gan"}, {"q": "Thức ăn có tác dụng TRUNG HÒA acid dịch vị là:", "o": ["Sữa, trứng", "Dưa cà muối", "Chanh, sấu", "Nước có ga"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Dinh dưỡng xơ gan, VTC, loét DDTT"}, {"q": "Thuốc nào sau đây thuộc nhóm ức chế bơm proton?", "o": ["Nhôm hydroxyd", "Cimetidin", "Sucralfat", "Omeprazol"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Thuốc điều trị bệnh tiêu hóa"}, {"q": "Nguyên tắc sờ nắn bụng ĐÚNG là:", "o": ["Sờ nhẹ nhàng từ vùng không đau trước, vùng đau sau; đặt sát cả lòng bàn tay", "Bảo người bệnh gồng bụng", "Sờ vùng đau trước", "Chỉ dùng 5 đầu ngón tay ấn mạnh"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Nhận định người bệnh tiêu hóa"}, {"q": "Cấu trúc làm tăng bề mặt hấp thu của ruột non gồm:", "o": ["Chỉ có nếp gấp", "Tuyến Brunner", "Nếp gấp, nhung mao, vi nhung mao", "Van hồi manh tràng"], "a": 2, "e": "Làm tăng bề mặt hấp thu khoảng 1000 lần.", "t": "Phần 2 · Tiêu hóa – Bài: Giải phẫu sinh lý hệ tiêu hóa"}, {"q": "HP được phát hiện ở khoảng bao nhiêu % người loét tá tràng?", "o": ["90–96%", "100%", "40–50%", "10–20%"], "a": 0, "e": "Và ít nhất 70% người loét dạ dày.", "t": "Phần 2 · Tiêu hóa – Bài: Sinh lý bệnh tiêu hóa"}, {"q": "Rối loạn điện giải hay gặp trong viêm tụy cấp là:", "o": ["Tăng kali máu", "Hạ calci máu", "Tăng calci máu", "Tăng natri máu"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc viêm tụy cấp"}, {"q": "Nhóm thuốc TĂNG CƯỜNG yếu tố bảo vệ niêm mạc dạ dày gồm:", "o": ["Prostaglandin, sucralfat, bismuth", "Nhôm hydroxyd", "Omeprazol, ranitidin", "Amoxicilin, metronidazol"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Thuốc điều trị bệnh tiêu hóa"}, {"q": "Chế độ ăn cho người bệnh loét dạ dày tá tràng nên:", "o": ["Ăn nhiều đồ chua, lên men", "Ăn 1–2 bữa lớn mỗi ngày", "Uống cà phê đặc sau ăn", "Chia 4–6 bữa nhỏ, tránh quá no, quá đói"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Dinh dưỡng xơ gan, VTC, loét DDTT"}, {"q": "Thuốc có thể làm phân đen gây nhầm với XHTH là:", "o": ["Omeprazol", "Bismuth, sắt", "Vitamin C", "Paracetamol"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xuất huyết tiêu hóa"}, {"q": "Đặc điểm cơn đau loét dạ dày tá tràng là:", "o": ["Đau có tính chu kỳ (trong ngày, theo mùa), hay tái phát vào mùa rét", "Đau lan xuống bẹn", "Đau liên tục suốt năm", "Chỉ đau khi gắng sức"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc loét dạ dày tá tràng"}, {"q": "Tiêu chuẩn vàng chẩn đoán xơ gan là:", "o": ["Xét nghiệm ALT, AST", "Nội soi dạ dày", "Sinh thiết gan", "Siêu âm bụng"], "a": 2, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xơ gan"}, {"q": "Tăng huyết áp, hẹp van động mạch chủ gây suy tim theo cơ chế:", "o": ["Quá tải thể tích", "Quá tải áp lực", "Thiếu máu", "Nhiễm độc"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Sinh lý bệnh suy tim, THA, mạch vành"}, {"q": "Blốc nhĩ thất cấp III (hoàn toàn) có tần số thất thường:", "o": ["> 150 nhịp/phút", "100–150 nhịp/phút", "60–100 nhịp/phút", "30–50 nhịp/phút"], "a": 3, "e": "", "t": "Phần 3 · Tim mạch – Bài: Điện tâm đồ cơ bản"}, {"q": "Trước khi đo huyết áp, người bệnh cần nghỉ ngơi trong phòng yên tĩnh ít nhất:", "o": ["5–10 phút", "30 phút", "1 phút", "1 giờ"], "a": 0, "e": "Không dùng chất kích thích trước đó 2 giờ.", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc tăng huyết áp"}, {"q": "Theo khuyến cáo Hội Tim mạch học Việt Nam 2022, THA độ 1 khi đo tại phòng khám là:", "o": ["≥ 180 và/hoặc ≥ 120 mmHg", "130–139 / 85–89 mmHg", "140–159 và/hoặc 90–99 mmHg", "≥ 160 và/hoặc ≥ 100 mmHg"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc tăng huyết áp"}, {"q": "Captopril nên uống vào thời điểm:", "o": ["Trước bữa ăn 1 giờ", "Ngay sau ăn no", "Chỉ trước khi ngủ", "Trong bữa ăn"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Thuốc tim mạch"}, {"q": "Hội chứng mạch vành cấp KHÔNG bao gồm:", "o": ["NSTEMI", "Đau thắt ngực ổn định", "STEMI", "Đau thắt ngực không ổn định"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Hội chứng mạch vành cấp"}, {"q": "Trung tâm tự động chính điều khiển nhịp tim là:", "o": ["Nút Tawara", "Bó His", "Nút xoang (Keith–Flack)", "Mạng Purkinje"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Giải phẫu sinh lý tuần hoàn"}, {"q": "Rung thất hoặc nhanh thất vô mạch cần xử trí:", "o": ["Xoa xoang cảnh", "Cho uống thuốc chống loạn nhịp", "Sốc điện chuyển nhịp đồng bộ có chuẩn bị", "Sốc điện phá rung (không đồng bộ) ngay và ép tim"], "a": 3, "e": "", "t": "Phần 3 · Tim mạch – Bài: Rối loạn nhịp tim"}, {"q": "Biểu hiện chủ yếu của suy tim TRÁI là:", "o": ["Tĩnh mạch cổ nổi", "Khó thở do ứ máu ở phổi", "Phù chân, gan to", "Cổ trướng"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Sinh lý bệnh suy tim, THA, mạch vành"}, {"q": "Trong chế độ ăn suy tim, kali được khuyến nghị:", "o": ["Tăng 4000–5000 mg/ngày", "Hạn chế dưới 1000 mg/ngày", "Không quan trọng", "Cấm thực phẩm giàu kali"], "a": 0, "e": "Do mất kali khi dùng lợi tiểu.", "t": "Phần 3 · Tim mạch – Bài: Dinh dưỡng tim mạch"}, {"q": "Blốc nhĩ thất cấp I có dấu hiệu:", "o": ["Nhĩ và thất đập riêng rẽ", "PR > 0,20 s, mỗi P đều có QRS theo sau", "PR dài dần rồi mất 1 QRS", "Không có sóng P"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Điện tâm đồ cơ bản"}, {"q": "Biểu hiện của suy tim PHẢI là:", "o": ["Ran ẩm hai đáy phổi", "Phù mắt cá chân, gan to, tĩnh mạch cổ nổi", "Ho, khạc đờm hồng", "Khó thở kịch phát về đêm"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc suy tim"}, {"q": "Chống chỉ định của digoxin là:", "o": ["Suy tim kèm nhịp chậm, nghẽn nhĩ thất", "Suy tim có nhịp nhanh", "Nhịp nhanh trên thất", "Rung nhĩ nhanh"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Thuốc tim mạch"}, {"q": "Khi dùng morphin giảm đau cho người bệnh NMCT, điều dưỡng cần theo dõi:", "o": ["Lượng nước tiểu", "Tình trạng hô hấp, SpO2 (nguy cơ ức chế hô hấp)", "Đường huyết", "Nhiệt độ"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Hội chứng mạch vành cấp"}, {"q": "Phụ nữ có thai được bổ sung acid folic nhằm:", "o": ["Phòng khiếm khuyết ống thần kinh ở thai nhi", "Giảm nghén", "Tăng cân", "Phòng tiền sản giật"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Thuốc điều trị thiếu máu"}, {"q": "Phản ứng tan máu muộn thường biểu hiện sau truyền máu:", "o": ["1 giờ", "Vài phút", "5–10 ngày, với sốt, thiếu máu, vàng da", "1 năm"], "a": 2, "e": "", "t": "Phần 4 · Huyết học – Bài: Tai biến truyền máu"}, {"q": "Hợp chất HbCO khó phân ly hình thành khi ngộ độc:", "o": ["Nitơ", "O2", "CO2", "CO (carbon monoxid)"], "a": 3, "e": "Lúc đó hồng cầu không vận chuyển được khí.", "t": "Phần 4 · Huyết học – Bài: Sinh lý máu"}, {"q": "Tác dụng không mong muốn thường gặp khi uống sắt là:", "o": ["Buồn nôn, táo bón, vị tanh, phân đen", "Tiêu chảy ra máu", "Hạ huyết áp", "Rụng tóc"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Thuốc điều trị thiếu máu"}, {"q": "Thiếu máu do thiếu acid folic, vitamin B12 thường có:", "o": ["Hồng cầu to, bình sắc, có thể giảm cả ba dòng", "Hồng cầu lưới tăng cao", "Hồng cầu nhỏ nhược sắc", "Tiểu cầu tăng"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Bệnh học thiếu máu"}, {"q": "Trước mỗi đợt hóa trị cần:", "o": ["Đánh giá thể trạng, tác dụng phụ đợt trước, xét nghiệm máu", "Chỉ đo nhiệt độ", "Cho ăn no", "Không cần xét nghiệm"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Hóa chất điều trị bệnh máu ác tính"}, {"q": "Tính chất đặc trưng của xuất huyết dưới da là:", "o": ["Luôn gồ lên mặt da", "Mất đi khi ấn kính đè", "Không mất đi dưới áp lực, thấy rõ khi căng da hoặc dùng kính đè", "Không thay đổi màu theo thời gian"], "a": 2, "e": "", "t": "Phần 4 · Huyết học – Bài: Nhận định người bệnh huyết học"}, {"q": "Thalassemia (tan máu bẩm sinh) được điều trị chủ yếu bằng:", "o": ["Truyền máu định kỳ", "Hóa trị", "Corticoid", "Phẫu thuật"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc thiếu máu"}, {"q": "Nhu cầu protein cho người bệnh thiếu máu theo giáo trình là:", "o": ["1,7–2 g/kg/ngày", "3 g/kg/ngày", "0,8 g/kg/ngày", "0,5 g/kg/ngày"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Dinh dưỡng bệnh máu"}, {"q": "Nhiễm khuẩn túi máu biểu hiện sốt cao, rét run, tụt huyết áp, xử trí:", "o": ["Truyền thêm túi khác ngay", "Ngừng truyền, cấy máu, cấy túi và dây truyền, kháng sinh tĩnh mạch", "Tiếp tục truyền chậm", "Chỉ hạ sốt"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Tai biến truyền máu"}, {"q": "Trước khi truyền máu, ngoài định nhóm máu cần làm thêm:", "o": ["Phản ứng chéo", "X-quang", "Siêu âm", "Điện tâm đồ"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Nhóm máu, đông cầm máu"}, {"q": "Người bệnh lơ-xê-mi có tiểu cầu giảm, để phòng xuất huyết điều dưỡng cần:", "o": ["Hạn chế thủ thuật xâm lấn qua da, ấn kỹ vị trí tiêm chọc", "Tiêm bắp nhiều lần trong ngày", "Khuyến khích vận động mạnh", "Cho dùng aspirin hạ sốt"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc Lơ-xê-mi"}, {"q": "Chăm sóc người bệnh đa u tủy xương đau xương, nguy cơ gãy xương cần:", "o": ["Xoa bóp mạnh vùng đau", "Nằm giường đệm cứng, tránh vận động mạnh, thay đổi tư thế đột ngột", "Nằm đệm thật mềm, lún sâu", "Tập tạ"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc đa u tủy xương"}, {"q": "Lympho T được huấn luyện tại:", "o": ["Lách", "Gan", "Tuyến ức", "Tủy xương"], "a": 2, "e": "Đảm nhận miễn dịch tế bào.", "t": "Phần 4 · Huyết học – Bài: Sinh lý máu"}], [{"q": "Đặc điểm thăm khám thường gặp ở người bệnh COPD là:", "o": ["Rì rào phế nang tăng", "Lồng ngực hình thùng, thở mím môi, gõ vang", "Tiếng cọ màng phổi", "Lồng ngực xẹp một bên, gõ đục"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc BPTNMT"}, {"q": "Ngón tay dùi trống ở người bệnh giãn phế quản gợi ý:", "o": ["Ho ra máu nặng", "Thiếu máu", "Đợt bội nhiễm cấp", "Suy hô hấp mạn tính"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc giãn phế quản"}, {"q": "Khi cố định mask thở không xâm nhập, điều dưỡng cần lưu ý:", "o": ["Dùng mask to hơn mặt", "Không cần vệ sinh mask", "Mask vừa mặt, không quá chặt (gây loét tì đè) cũng không quá lỏng (hở khí)", "Cố định thật chặt để không hở khí"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Thở máy không xâm nhập, thở oxy"}, {"q": "Cơ chế chủ yếu gây áp xe phổi là:", "o": ["Theo đường máu", "Do dị ứng", "Hít phải vi khuẩn kỵ khí trong khoang miệng", "Do lao"], "a": 2, "e": "Thường ở người hôn mê do rượu, ngộ độc thuốc ngủ, gây mê, TBMMN…", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc áp xe phổi"}, {"q": "Khó thở kiểu Kussmaul có đặc điểm và gặp trong:", "o": ["Thở sâu chậm, có nghỉ giữa thì hít vào và thở ra – nhiễm toan máu", "Thở nhanh nông – tràn khí màng phổi", "Nhịp thở nhanh dần rồi chậm dần, nghỉ – tổn thương trung tâm hô hấp", "Khó thở thì thở vào – hẹp thanh quản"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Nhận định người bệnh hô hấp"}, {"q": "Salbutamol dạng khí dung bắt đầu có tác dụng sau khoảng:", "o": ["2 giờ", "30–60 phút", "2–3 phút", "15–20 phút"], "a": 2, "e": "SABA khí dung tác dụng sau 2–3 phút, kéo dài 3–6 giờ.", "t": "Phần 1 · Hô hấp – Bài: Thuốc điều trị hen phế quản"}, {"q": "Khi hệ thống dẫn lưu màng phổi bị tuột, điều dưỡng cần làm NGAY:", "o": ["Tăng áp lực hút", "Rút bỏ ống dẫn lưu", "Gọi bác sĩ rồi chờ", "Kẹp hoặc gập ngay phần dẫn lưu từ người bệnh đi ra"], "a": 3, "e": "Tránh khí tràn vào khoang màng phổi.", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc dẫn lưu màng phổi"}, {"q": "Dị vật đường thở ở vùng hầu thường mắc lại ở:", "o": ["Ngách hình lê", "Hạnh nhân khẩu cái", "Lỗ vòi tai", "Vòm hầu"], "a": 0, "e": "", "t": "Phần 1 · Hô hấp – Bài: Giải phẫu sinh lý hệ hô hấp"}, {"q": "Rối loạn thông khí tắc nghẽn được xác định khi:", "o": ["TLC tăng", "FEV1/FVC > 80%", "FEV1/FVC < 70%", "VC < 80% và FEV1/FVC bình thường"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc BPTNMT"}, {"q": "Biến chứng cuối cùng của hen phế quản là:", "o": ["Tràn khí màng phổi", "Viêm phổi", "Áp xe phổi", "Suy thất phải"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc hen phế quản"}, {"q": "Hội chứng Kartagener gồm:", "o": ["Giãn phế quản + suy tim phải", "Giãn phế quản + polyp mũi", "Giãn phế quản + viêm đa xoang + đảo ngược phủ tạng", "Giãn phế quản + lao phổi"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc giãn phế quản"}, {"q": "Lưu ý khi dùng bình hít bột khô (DPI):", "o": ["Cần lắc kỹ trước khi hít", "Phải dùng buồng đệm", "Giữ bình khô, không thả vào nước, không nuốt viên nang dùng để hít", "Rửa ngâm bình trong nước hằng ngày"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Dụng cụ phân phối thuốc hô hấp"}, {"q": "Ipratropium bromid cần thận trọng ở người bệnh:", "o": ["Suy giáp", "Thiếu máu", "Đái tháo đường", "Tăng nhãn áp, phì đại tiền liệt tuyến"], "a": 3, "e": "Thuốc hủy phó giao cảm: thận trọng tăng nhãn áp, phì đại tiền liệt tuyến, tắc nghẽn dòng chảy bàng quang.", "t": "Phần 1 · Hô hấp – Bài: Thuốc điều trị hen phế quản"}, {"q": "Thực phẩm nên HẠN CHẾ ở người bệnh COPD vì gây sinh hơi, làm khó thở là:", "o": ["Thịt nạc", "Dầu ô liu", "Rau họ cải", "Cá nạc"], "a": 2, "e": "", "t": "Phần 1 · Hô hấp – Bài: Dinh dưỡng BPTNMT"}, {"q": "Đờm có mủ lẫn máu, mùi rất hôi thối gợi ý:", "o": ["Phù phổi cấp", "Áp xe phổi", "Hen phế quản", "Viêm phổi thùy"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Nhận định người bệnh hô hấp"}, {"q": "Trên X-quang, tràn dịch màng phổi số lượng ít chỉ thấy:", "o": ["Tim bị đẩy sang đối diện", "Hình hang", "Mờ quá 1/2 phổi", "Góc sườn hoành tù"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc tràn dịch màng phổi"}, {"q": "Chẩn đoán chăm sóc 'Mất nước' ở người bệnh viêm phổi chủ yếu liên quan đến:", "o": ["Tiêu chảy", "Sốt và tăng tần số thở", "Ăn mặn", "Dùng thuốc lợi tiểu"], "a": 1, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc viêm phổi"}, {"q": "Ngay sau đặt dẫn lưu màng phổi, số lượng dịch ra cần theo dõi và ghi:", "o": ["Mỗi 8 giờ ngay từ đầu", "Chỉ khi rút dẫn lưu", "1 lần/ngày", "30 phút/lần trong 2 giờ đầu, không để ra quá 1 lít"], "a": 3, "e": "", "t": "Phần 1 · Hô hấp – Bài: Chăm sóc dẫn lưu màng phổi"}, {"q": "Tá tràng dài khoảng 25 cm, có hình dạng:", "o": ["Chữ U ngược", "Chữ C ôm lấy đầu tụy", "Chữ J", "Chữ S"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Giải phẫu sinh lý hệ tiêu hóa"}, {"q": "Lời khuyên quan trọng nhất cho người bệnh xơ gan do rượu là:", "o": ["Tuyệt đối ngừng rượu, bia, thuốc lá", "Chỉ uống bia, không uống rượu", "Giảm dần lượng rượu", "Uống rượu thuốc"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xơ gan"}, {"q": "Tác dụng không mong muốn của cimetidin có thể gặp ở nam giới là:", "o": ["Tăng huyết áp", "Vú to, bất lực", "Phân đen", "Rụng tóc"], "a": 1, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Thuốc điều trị bệnh tiêu hóa"}, {"q": "Triệu chứng 'rắn bò' vùng thượng vị gợi ý:", "o": ["Hẹp môn vị", "Tắc ruột non thấp", "Cổ trướng", "Tắc đại tràng thấp"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Nhận định người bệnh tiêu hóa"}, {"q": "Biến chứng thủng ổ loét có dấu hiệu:", "o": ["Nôn ra thức ăn cũ", "Phân bạc màu", "Đau âm ỉ, bụng mềm", "Đau đột ngột dữ dội như dao đâm vùng thượng vị, bụng cứng như gỗ"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc loét dạ dày tá tràng"}, {"q": "Yếu tố BẢO VỆ niêm mạc dạ dày gồm:", "o": ["Gastrin, histamin", "Muối mật", "HCl, pepsin", "Chất nhầy, ion HCO3–, khả năng tái tạo niêm mạc (phụ thuộc tưới máu)"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Sinh lý bệnh tiêu hóa"}, {"q": "Lưu lượng nước bọt bài tiết hằng ngày khoảng:", "o": ["5 lít", "100–200 ml", "3–4 lít", "800–1500 ml"], "a": 3, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Giải phẫu sinh lý hệ tiêu hóa"}, {"q": "Tư thế giảm đau cho người bệnh viêm tụy cấp là:", "o": ["Nằm nghiêng co chân hoặc ngồi gập người ra trước", "Nằm ngửa duỗi thẳng chân", "Nằm sấp", "Nằm đầu thấp"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc viêm tụy cấp"}, {"q": "Người bệnh xơ gan nên ăn nhẹ vào bữa tối muộn nhằm:", "o": ["Tăng cân nhanh", "Hạn chế hạ đường huyết và giảm dị hóa", "Giảm cổ trướng", "Giảm vàng da"], "a": 1, "e": "Chia 3–5 bữa/ngày, bữa tối muộn nhẹ.", "t": "Phần 2 · Tiêu hóa – Bài: Dinh dưỡng xơ gan, VTC, loét DDTT"}, {"q": "Xuất huyết tiêu hóa mức độ NẶNG khi:", "o": ["Mạch > 120 l/ph, HA tâm thu < 80 mmHg, Hct < 0,2", "HA tâm thu > 90 mmHg", "Hồng cầu > 3 triệu/mm³", "Mất < 500 ml, mạch 90–100"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xuất huyết tiêu hóa"}, {"q": "Thuốc kháng acid nên uống vào thời điểm:", "o": ["Sau ăn 1–3 giờ hoặc trước khi đi ngủ", "Ngay trước bữa ăn 5 phút", "Bất kỳ lúc nào cùng các thuốc khác", "Lúc đói sáng sớm"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Thuốc điều trị bệnh tiêu hóa"}, {"q": "Xuất huyết tiêu hóa trên thường biểu hiện:", "o": ["Nôn ra máu và đại tiện phân đen", "Phân nhầy máu mũi", "Phân trắng", "Đại tiện máu đỏ tươi thành tia"], "a": 0, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc xuất huyết tiêu hóa"}, {"q": "Phân trắng như vôi gợi ý:", "o": ["Kiết lỵ", "Trĩ", "Tắc mật hoàn toàn", "Xuất huyết tiêu hóa trên"], "a": 2, "e": "", "t": "Phần 2 · Tiêu hóa – Bài: Nhận định người bệnh tiêu hóa"}, {"q": "Dấu hiệu Cullen trong viêm tụy cấp là:", "o": ["Vàng da", "Bầm tím mạn sườn, hông", "Phù nề, bầm tím quanh rốn", "Điểm sườn lưng trái đau"], "a": 2, "e": "Grey Turner: bầm tím mặt bên thành bụng và hông.", "t": "Phần 2 · Tiêu hóa – Bài: Chăm sóc viêm tụy cấp"}, {"q": "Áp lực tĩnh mạch trung tâm (CVP) bình thường khoảng:", "o": ["15–20 cmH2O", "0–2 cmH2O", "5–8 cmH2O", "25–30 cmH2O"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Giải phẫu sinh lý tuần hoàn"}, {"q": "Phần lớn tăng huyết áp ở người trưởng thành là:", "o": ["THA thứ phát do bệnh thận", "Do u tủy thượng thận", "Do hẹp eo động mạch chủ", "THA nguyên phát (không rõ nguyên nhân)"], "a": 3, "e": "Chỉ khoảng 10% có nguyên nhân.", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc tăng huyết áp"}, {"q": "Liều duy trì digoxin ở người lớn thường là:", "o": ["5 mg/ngày", "0,125–0,25 mg/ngày", "10 mg/ngày", "1–2 mg/ngày"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Thuốc tim mạch"}, {"q": "Nghiệm pháp không dùng thuốc trong rối loạn nhịp nhanh (trên thất) là:", "o": ["Ép tim ngoài lồng ngực", "Ấn nhãn cầu, xoa xoang cảnh", "Nằm đầu thấp", "Chườm nóng"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Rối loạn nhịp tim"}, {"q": "Đặc điểm điện tâm đồ của RUNG NHĨ là:", "o": ["QRS giãn rộng có nghỉ bù", "Mất sóng P, thay bằng sóng f lăn tăn 400–600/phút, RR không đều", "PR dài > 0,20 s", "Sóng P đều trước mỗi QRS"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Điện tâm đồ cơ bản"}, {"q": "Khoảng PR bình thường kéo dài:", "o": ["0,12–0,20 s", "> 0,40 s", "0,04–0,08 s", "0,30–0,40 s"], "a": 0, "e": "", "t": "Phần 3 · Tim mạch – Bài: Điện tâm đồ cơ bản"}, {"q": "Cơn đau thắt ngực không ổn định khi nghỉ thường kéo dài:", "o": ["< 1 phút", "> 20 phút", "Đúng 5 phút", "Chỉ vài giây"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Hội chứng mạch vành cấp"}, {"q": "Suy tim giai đoạn 3, lượng muối nên:", "o": ["Ăn mặn bình thường", "Dưới 6 g muối/ngày", "Dưới 4 g muối/ngày", "Dưới 8 g muối/ngày"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Dinh dưỡng tim mạch"}, {"q": "Liều aspirin dự phòng biến cố huyết khối tim mạch thường dùng là:", "o": ["1 g/ngày", "75–100 mg/ngày", "10 mg/ngày", "500 mg/ngày"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Thuốc tim mạch"}, {"q": "Tư thế người bệnh khi khám tim mạch thường là:", "o": ["Nằm sấp", "Đứng", "Nằm đầu thấp", "Nằm ngửa đầu cao"], "a": 3, "e": "", "t": "Phần 3 · Tim mạch – Bài: Nhận định người bệnh tim mạch"}, {"q": "Nguyên nhân phổ biến nhất của hội chứng mạch vành cấp là:", "o": ["Co thắt mạch vành do cocain", "Bóc tách động mạch vành", "Nứt vỡ mảng xơ vữa động mạch vành hình thành huyết khối", "Viêm nội tâm mạc"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Hội chứng mạch vành cấp"}, {"q": "Huyết áp mục tiêu chung cho người bệnh THA là:", "o": ["< 140/90 mmHg (thấp hơn nếu dung nạp)", "< 160/100 mmHg", "< 110/70 mmHg", "< 100/60 mmHg"], "a": 0, "e": "Nguy cơ tim mạch cao: < 130/80 mmHg.", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc tăng huyết áp"}, {"q": "Khi dùng lợi tiểu thải trừ kali (furosemid), điều dưỡng cần đề phòng:", "o": ["Tăng natri máu", "Hạ kali máu gây rối loạn nhịp", "Hạ đường huyết", "Tăng kali máu"], "a": 1, "e": "", "t": "Phần 3 · Tim mạch – Bài: Chăm sóc suy tim"}, {"q": "Lúc nghỉ, mỗi tâm thất bơm ra khoảng:", "o": ["1–2 lít/phút", "20 lít/phút", "4,5–5 lít/phút", "10 lít/phút"], "a": 2, "e": "", "t": "Phần 3 · Tim mạch – Bài: Sinh lý bệnh suy tim, THA, mạch vành"}, {"q": "Chỉ định truyền khối hồng cầu nói chung khi:", "o": ["Hb < 100 g/L ở mọi người bệnh", "Hb < 120 g/L", "Theo yêu cầu người bệnh", "Hb < 70 g/L kèm biểu hiện thiếu oxy tổ chức rõ"], "a": 3, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc thiếu máu"}, {"q": "Loại bạch cầu chiếm tỷ lệ cao nhất trong máu ngoại vi là:", "o": ["Đa nhân trung tính (60–70%)", "Ưa acid", "Mono", "Lympho"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Sinh lý máu"}, {"q": "Nguyên tắc cơ bản trong truyền máu là:", "o": ["Chỉ cần cùng hệ Rh", "Không để kháng nguyên và kháng thể tương ứng gặp nhau trong máu người nhận", "Truyền càng nhanh càng tốt", "Nhóm O truyền được cho tất cả với số lượng không giới hạn"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Nhóm máu, đông cầm máu"}, {"q": "Lơ-xê-mi cấp chẩn đoán xác định khi tủy đồ có tế bào non ác tính (blast):", "o": ["≥ 50%", "≥ 20%", "≥ 10%", "≥ 5%"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc Lơ-xê-mi"}, {"q": "Thiếu máu do mất máu CẤP, mức độ thiếu máu dựa chủ yếu vào:", "o": ["Ferritin", "MCV", "Hematocrit", "Hemoglobin"], "a": 2, "e": "Thiếu máu mạn dựa vào hemoglobin.", "t": "Phần 4 · Huyết học – Bài: Bệnh học thiếu máu"}, {"q": "Liều thuốc hóa chất điều trị ung thư thường được tính dựa vào:", "o": ["Tuổi", "Diện tích bề mặt cơ thể", "Chiều cao", "Nhóm máu"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Hóa chất điều trị bệnh máu ác tính"}, {"q": "Sắt (III) dextran KHÔNG được dùng đường:", "o": ["Tiêm tĩnh mạch chậm", "Tiêm dưới da", "Truyền tĩnh mạch", "Tiêm bắp sâu"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Thuốc điều trị thiếu máu"}, {"q": "Tiêu chuẩn tổn thương cơ quan trong đa u tủy xương bao gồm:", "o": ["Tăng hồng cầu", "Tăng canxi máu > 2,6 mmol/L, suy thận, thiếu máu Hb < 100 g/L, tổn thương xương", "Hạ canxi máu", "Tăng tiểu cầu"], "a": 1, "e": "", "t": "Phần 4 · Huyết học – Bài: Chăm sóc đa u tủy xương"}, {"q": "Số lượng bạch cầu bình thường ở người Việt Nam là:", "o": ["1–3 G/L", "150–300 G/L", "15–20 G/L", "5–8 G/L"], "a": 3, "e": "", "t": "Phần 4 · Huyết học – Bài: Sinh lý máu"}, {"q": "Quá tải tuần hoàn do truyền máu dễ xảy ra ở người bệnh:", "o": ["Mất máu cấp nặng", "Người trẻ hiến máu", "Trẻ khỏe mạnh", "Thiếu máu mạn tính, có bệnh tim mạch sẵn, truyền nhanh, nhiều"], "a": 3, "e": "Biểu hiện suy tim, phù phổi cấp.", "t": "Phần 4 · Huyết học – Bài: Tai biến truyền máu"}, {"q": "Lơ-xê-mi cấp dòng lympho đặc trưng bởi:", "o": ["Tăng sinh ác tính tế bào lympho non trong tủy xương", "Thiếu sắt", "Tăng hồng cầu", "Tăng tiểu cầu lành tính"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Dinh dưỡng bệnh máu"}, {"q": "Chấm xuất huyết (petechiae) có kích thước:", "o": ["> 5 cm", "> 1 cm", "3 mm–1 cm", "1–2 mm"], "a": 3, "e": "Đốm xuất huyết (purpura): 3 mm–1 cm.", "t": "Phần 4 · Huyết học – Bài: Nhận định người bệnh huyết học"}, {"q": "Xử trí phản ứng dị ứng nổi mày đay nhẹ khi truyền máu:", "o": ["Ngừng hẳn truyền và không truyền lại", "Truyền thêm máu khác nhóm", "Giảm tốc độ truyền, dùng kháng histamin, tiếp tục truyền nếu không nặng thêm sau 30 phút", "Tăng tốc độ truyền"], "a": 2, "e": "", "t": "Phần 4 · Huyết học – Bài: Tai biến truyền máu"}, {"q": "Dùng acid folic đơn thuần khi thiếu máu do thiếu vitamin B12 có thể:", "o": ["Làm tổn thương thần kinh nặng hơn", "Không ảnh hưởng gì", "Chữa khỏi hoàn toàn", "Gây tăng huyết áp"], "a": 0, "e": "", "t": "Phần 4 · Huyết học – Bài: Thuốc điều trị thiếu máu"}]];
+const DURATION = 60 * 60 * 1000;
+const KEY = "onthi_md6_v1";
+const L = ["A","B","C","D"];
+
+let store = load();
+let cur = store.cur ?? 0;
+let view = "exam";
+
+function blank(){ return {answers:{}, flags:{}, checked:{}, end:null, submitted:false, result:null}; }
+function load(){
+  try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s && s.exams && s.exams.length===5) return s; }catch(e){}
+  return {cur:0, exams:[0,1,2,3,4].map(blank)};
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} }
+store.exams.forEach(e=>{ if(!e.checked) e.checked={}; });
+const st = () => store.exams[cur];
+const $ = id => document.getElementById(id);
+function esc(t){ return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function fmt(ms){ ms=Math.max(0,ms); const s=Math.ceil(ms/1000); return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); }
+function status(i){
+  const s = store.exams[i];
+  if(s.submitted) return {cls:"done", pill:"p-done", txt:`Đã nộp · ${s.result.correct}/60 câu đúng`, short:"Đã nộp"};
+  if(s.end) return {cls:"doing", pill:"p-doing", txt:`Đang làm · còn ${fmt(s.end-Date.now())}`, short:"Đang làm"};
+  return {cls:"", pill:"p-new", txt:"Chưa làm · 60 câu", short:"Chưa làm"};
+}
+
+/* ---------- CỘT TRÁI ---------- */
+function renderList(){
+  const box = $("examList"); box.innerHTML = "";
+  EXAMS.forEach((_,i)=>{
+    const s = status(i);
+    const b = document.createElement("button");
+    b.className = "row" + (view==="exam" && i===cur ? " active":"");
+    b.innerHTML = `<span class="num">${i+1}</span><span class="tx"><b>Đề số ${i+1}</b><small class="${s.cls}" data-badge="${i}">${s.txt}</small></span>`;
+    b.onclick = ()=>{ view="exam"; cur=i; store.cur=i; save(); renderAll(); goTop(); };
+    box.appendChild(b);
+  });
+  $("boardBtn").classList.toggle("on", view==="board");
+}
+function goTop(){ $("mid").scrollTop=0; window.scrollTo(0,0); }
+$("boardBtn").onclick = ()=>{ view="board"; renderAll(); goTop(); };
+
+/* ---------- CỘT GIỮA ---------- */
+function renderBoard(){
+  const box = $("midInner"); box.innerHTML = "";
+  const done = store.exams.filter(s=>s.submitted);
+  const avg = done.length ? (done.reduce((a,s)=>a+s.result.correct,0)/done.length/6).toFixed(1) : "–";
+  const best = done.length ? (Math.max(...done.map(s=>s.result.correct))/6).toFixed(1) : "–";
+  const rows = EXAMS.map((_,i)=>{
+    const s=store.exams[i], x=status(i);
+    const score = s.submitted ? `<b>${(s.result.correct/6).toFixed(1)}</b>/10` : "–";
+    const det = s.submitted ? `${s.result.correct} đúng · ${s.result.wrong} sai · ${s.result.skip} bỏ trống` : (s.end?`${Object.keys(s.answers).length}/60 câu đã làm`:"–");
+    const tm = s.submitted ? fmt(s.result.used) : "–";
+    return `<tr class="clk" data-i="${i}"><td><b>Đề số ${i+1}</b></td><td><span class="pill ${x.pill}">${x.short}</span></td><td>${score}</td><td>${det}</td><td>${tm}</td></tr>`;
+  }).join("");
+  const c = document.createElement("div"); c.className="card board";
+  c.innerHTML = `<h2 style="margin:0 0 12px;font-size:22px">📊 Bảng kết quả</h2>
+    <div class="sum"><div><b>${done.length}/5</b><small>Đề đã nộp</small></div><div><b>${avg}</b><small>Điểm trung bình</small></div><div><b>${best}</b><small>Điểm cao nhất</small></div></div>
+    <div style="overflow-x:auto"><table><thead><tr><th>Đề</th><th>Trạng thái</th><th>Điểm</th><th>Chi tiết</th><th>Thời gian</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="note" style="margin-top:16px">Bấm vào một đề để mở và làm bài hoặc xem lại đáp án.</div>`;
+  box.appendChild(c);
+  c.querySelectorAll("tr.clk").forEach(r=>r.onclick=()=>{ view="exam"; cur=+r.dataset.i; store.cur=cur; save(); renderAll(); goTop(); });
+}
+
+function renderCard(box,i){
+  const s=st(), q=EXAMS[cur][i];
+    const ans = s.answers[i];
+    const reveal = s.submitted;
+    let state="", stt = ans!==undefined ? "Đã làm" : "Chưa làm";
+    if(reveal){
+      if(ans===undefined){ state=" is-skip"; stt="Bỏ trống"; }
+      else if(ans===q.a){ state=" is-right"; stt="Đúng"; }
+      else { state=" is-wrong"; stt="Sai"; }
+    }
+    const card = document.createElement("div");
+    card.className = "card q" + (ans!==undefined?" answered":"") + (reveal?" locked":"") + state;
+    card.id = "q"+i; card.dataset.i = i;
+    const opts = q.o.map((o,k)=>{
+      let c="opt";
+      if(reveal){ if(k===q.a) c+=" is-correct"; else if(k===ans) c+=" is-incorrect"; }
+      else if(k===ans) c+=" sel";
+      return `<button class="${c}" data-k="${k}"><span class="k">${L[k]}</span><span>${esc(o)}</span></button>`;
+    }).join("");
+    let expl="";
+    if(reveal){
+      const v = ans===undefined ? "Chưa trả lời." : ans===q.a ? "Chính xác!" : `Bạn chọn ${L[ans]} – chưa đúng.`;
+      expl = `<div class="expl"><b>Đáp án: ${L[q.a]}.</b> ${v}${q.e?" "+esc(q.e):""}</div>`;
+    }
+    card.innerHTML = `<div class="q-head"><span class="qn">${i+1}</span><span class="qs">${stt}</span>
+      <button class="flag${s.flags[i]?" on":""}">${s.flags[i]?"★ Đã đánh dấu":"☆ Đánh dấu"}</button></div>
+      <div class="q-tag">${esc(q.t.split(" – ")[1]||"")}</div>
+      <div class="q-text">${esc(q.q)}</div><div class="opts">${opts}</div>${expl}`;
+    box.appendChild(card);
+}
+
+function renderMid(){
+  if(view==="board") return renderBoard();
+  const s = st(), ex = EXAMS[cur], box = $("midInner");
+  box.innerHTML = "";
+  const head = document.createElement("div"); head.className="card head";
+  let filters = "";
+  if(s.submitted) filters = `<div class="chips" id="filters">
+      <button class="chip on" data-f="all">Tất cả</button>
+      <button class="chip" data-f="wrong">Câu sai (${s.result.wrong})</button>
+      <button class="chip" data-f="skip">Bỏ trống (${s.result.skip})</button>
+      <button class="chip" data-f="flag">Đã đánh dấu</button></div>`;
+  head.innerHTML = `<div class="head-top"><h2>Đề số ${cur+1} · Trắc nghiệm</h2>${filters}</div>
+    <div class="note">Chọn <b>1 đáp án đúng</b> cho mỗi câu. Có thể đổi đáp án trước khi nộp; <b>đáp án và kết quả chỉ hiện sau khi nộp bài</b>; bấm <b>☆ Đánh dấu</b> để xem lại câu chưa chắc chắn.</div>`;
+  box.appendChild(head);
+
+  if(!s.end && !s.submitted){
+    const intro = document.createElement("div"); intro.className="card intro";
+    intro.innerHTML = `<div class="big">🌿</div><h3>Sẵn sàng làm Đề số ${cur+1}?</h3>
+      <div style="color:var(--muted)">Nội dung bám theo giáo trình Mô đun 6 – Trường CĐ Y tế Bạch Mai</div>
+      <ul><li>⏱️ Thời gian: <b>60 phút</b> – hết giờ bài tự động nộp</li>
+      <li>📋 Gồm <b>60 câu</b> thuộc 4 phần: Hô hấp, Tiêu hóa, Tim mạch, Huyết học</li>
+      <li>✅ Mỗi câu chỉ có <b>1 đáp án đúng</b></li>
+      <li>💡 Sau khi nộp sẽ xem được đáp án và giải thích</li></ul>
+      <button class="btn btn-or" id="startBtn">Bắt đầu làm bài</button>`;
+    box.appendChild(intro);
+    $("startBtn").onclick = ()=>{ s.end = Date.now()+DURATION; save(); renderAll(); };
+    return;
+  }
+
+  if(s.submitted){
+    const r = s.result, p = Math.round(r.correct/60*100);
+    const msg = r.correct>=54?"Xuất sắc! 🎉":r.correct>=45?"Rất tốt! 🌷":r.correct>=30?"Đạt – cố thêm chút nữa nhé 💪":"Cần ôn lại kỹ hơn 📚";
+    const res = document.createElement("div"); res.className="card result";
+    res.innerHTML = `<div class="ring" style="--p:${p}"><div><div><b>${(r.correct/6).toFixed(1)}</b><br><small>điểm /10</small></div></div></div>
+      <div><h3>${msg}</h3><div class="stats">
+      <span class="st ok">Đúng: ${r.correct}</span><span class="st bad">Sai: ${r.wrong}</span>
+      <span class="st sk">Bỏ trống: ${r.skip}</span><span class="st tm">Thời gian: ${fmt(r.used)}</span></div>
+      <button class="btn btn-line" id="redo">↻ Làm lại đề này</button></div>`;
+    box.appendChild(res);
+    $("redo").onclick = askReset;
+  }
+
+  let lastPart = "";
+  ex.forEach((q,i)=>{
+    const part = q.t.split(" – ")[0];
+    if(part!==lastPart){ const h=document.createElement("div"); h.className="part"; h.textContent=part; box.appendChild(h); lastPart=part; }
+    renderCard(box,i);
+  });
+
+  if(!s.submitted){
+    const end=document.createElement("div"); end.style.textAlign="center"; end.style.padding="6px";
+    end.innerHTML=`<button class="btn btn-or" id="submitBottom" style="min-width:220px">Nộp bài</button>`;
+    box.appendChild(end); $("submitBottom").onclick = askSubmit;
+  }else{
+    $("filters").onclick = e=>{
+      const b=e.target.closest(".chip"); if(!b) return;
+      document.querySelectorAll("#filters .chip").forEach(c=>c.classList.toggle("on",c===b));
+      const f=b.dataset.f;
+      document.querySelectorAll(".q").forEach(c=>{
+        const i=+c.dataset.i, a=s.answers[i], ok=a===EXAMS[cur][i].a;
+        const show = f==="all"||(f==="wrong"&&a!==undefined&&!ok)||(f==="skip"&&a===undefined)||(f==="flag"&&s.flags[i]);
+        c.style.display = show?"":"none";
+      });
+      document.querySelectorAll(".part").forEach(h=>h.style.display=f==="all"?"":"none");
+    };
+  }
+}
+
+$("midInner").addEventListener("click", e=>{
+  if(view!=="exam") return;
+  const s=st(); const card=e.target.closest(".q"); if(!card) return;
+  const i=+card.dataset.i;
+  if(e.target.closest(".flag")){
+    s.flags[i]=!s.flags[i]; if(!s.flags[i]) delete s.flags[i]; save();
+    const f=card.querySelector(".flag"); f.classList.toggle("on",!!s.flags[i]); f.textContent=s.flags[i]?"★ Đã đánh dấu":"☆ Đánh dấu";
+    renderRight(); return;
+  }
+  if(e.target.closest(".btn-chk")){
+    if(s.submitted||s.answers[i]===undefined) return;
+    s.checked[i]=true; save();
+    const tmp=document.createElement("div"); renderCard(tmp,i); card.replaceWith(tmp.firstChild);
+    renderRight(); return;
+  }
+  const opt=e.target.closest(".opt"); if(!opt||s.submitted||!s.end) return;
+  const k=+opt.dataset.k; s.answers[i]=k; save();
+  card.querySelectorAll(".opt").forEach(o=>o.classList.toggle("sel",+o.dataset.k===k));
+  card.classList.add("answered"); card.querySelector(".qs").textContent="Đã làm";
+  const cb=card.querySelector(".btn-chk"); if(cb) cb.disabled=false;
+  renderRight();
+});
+
+/* ---------- CỘT PHẢI ---------- */
+function renderRight(){
+  const s=st(), ex=EXAMS[cur];
+  const done=Object.keys(s.answers).length;
+  $("sideLbl").textContent = `Đề số ${cur+1} · Ôn thi`;
+  if(s.submitted){
+    $("cDone").textContent=s.result.correct; $("cDoneLbl").textContent="Câu đúng";
+    $("cLeft").textContent=s.result.wrong+s.result.skip; $("cLeftLbl").textContent="Sai / bỏ trống";
+  }else{
+    $("cDone").textContent=done; $("cDoneLbl").textContent="Đã làm";
+    $("cLeft").textContent=60-done; $("cLeftLbl").textContent="Chưa làm";
+  }
+  $("mcount").textContent = s.submitted ? `${s.result.correct}/60 đúng` : `${done}/60 câu`;
+  const g=$("qgrid"); g.innerHTML="";
+  ex.forEach((q,i)=>{
+    const c=document.createElement("button"); let cls="cell";
+    if(s.submitted){ const a=s.answers[i]; cls+= a===undefined?" skip":(a===q.a?" ok":" bad"); }
+    else if(s.answers[i]!==undefined) cls+=" ans";
+    if(s.flags[i]) cls+=" flg";
+    c.className=cls; c.textContent=i+1; c.onclick=()=>jump(i); g.appendChild(c);
+  });
+  const dot = `<i style="background:#f2b437;border:none;border-radius:50%;width:10px;height:10px"></i>`;
+  $("legend").innerHTML = s.submitted
+    ? `<span><i style="background:var(--ok);border-color:var(--ok)"></i>Đúng</span><span><i style="background:var(--bad);border-color:var(--bad)"></i>Sai</span><span><i style="background:#fff1dd;border-color:#f0c88e"></i>Bỏ trống</span><span>${dot}Đánh dấu</span>`
+    : `<span><i></i>Chưa làm</span><span><i style="background:var(--or);border-color:var(--or)"></i>Đã làm</span><span>${dot}Đánh dấu</span>`;
+  const can = !!s.end && !s.submitted;
+  $("submitBtn").disabled=!can; $("mSubmit").disabled=!can;
+  $("resetBtn").disabled = !s.end && !s.submitted;
+  tick();
+}
+function jump(i){
+  if(view!=="exam"){ view="exam"; renderAll(); }
+  const el=$("q"+i); if(!el) return;
+  if(el.style.display==="none") document.querySelector('#filters .chip[data-f="all"]')?.click();
+  el.scrollIntoView({behavior:"smooth",block:"start"});
+  el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),1200);
+  $("right").classList.remove("open");
+}
+
+/* ---------- ĐỒNG HỒ ---------- */
+function tick(){
+  store.exams.forEach((s,i)=>{ if(s.end && !s.submitted && Date.now()>=s.end) finish(i,true); });
+  const s=st(), clock=$("clock"), m=$("mclock");
+  let left = s.submitted ? DURATION - s.result.used : s.end ? s.end-Date.now() : DURATION;
+  const t = s.submitted ? fmt(s.result.used) : fmt(left);
+  clock.textContent=t; m.textContent=t;
+  $("timerLbl").textContent = s.submitted ? "Thời gian đã dùng" : "Thời gian còn lại";
+  $("timeBar").style.width = (Math.max(0,left)/DURATION*100)+"%";
+  const live = s.end && !s.submitted;
+  clock.classList.toggle("danger", live && left<=60000);
+  clock.classList.toggle("warn", live && left>60000 && left<=5*60000);
+  m.classList.toggle("danger", live && left<=5*60000);
+  document.querySelectorAll("[data-badge]").forEach(b=>{ const x=status(+b.dataset.badge); b.className=x.cls; b.textContent=x.txt; });
+}
+setInterval(tick,1000);
+
+function finish(i,auto){
+  const s=store.exams[i]; if(s.submitted) return;
+  let correct=0,wrong=0,skip=0;
+  EXAMS[i].forEach((q,k)=>{ const a=s.answers[k]; if(a===undefined) skip++; else if(a===q.a) correct++; else wrong++; });
+  const used=Math.min(DURATION, DURATION-Math.max(0,s.end-Date.now()));
+  s.submitted=true; s.result={correct,wrong,skip,used,auto:!!auto}; save();
+  if(i===cur && view==="exam"){ renderAll(); goTop();
+    if(auto) showModal("⏰","Hết giờ!","Bài làm của bạn đã được nộp tự động.",null,"Xem kết quả"); }
+  else renderAll();
+}
+
+/* ---------- HỘP THOẠI ---------- */
+let modalOk=null;
+function showModal(icon,title,text,onOk,okText="Nộp bài",cancelText="Làm tiếp"){
+  $("mIcon").textContent=icon; $("mTitle").textContent=title; $("mText").textContent=text;
+  $("mOk").textContent=okText; $("mCancel").textContent=cancelText;
+  $("mCancel").style.display = onOk?"":"none";
+  modalOk=onOk; $("modal").classList.add("show");
+}
+$("mOk").onclick=()=>{ $("modal").classList.remove("show"); if(modalOk) modalOk(); };
+$("mCancel").onclick=()=>$("modal").classList.remove("show");
+function askSubmit(){
+  const s=st(); if(!s.end||s.submitted) return;
+  const left=60-Object.keys(s.answers).length;
+  showModal("📝","Nộp bài?", left?`Bạn còn ${left} câu chưa làm. Bạn chắc chắn muốn nộp bài?`:"Bạn đã làm đủ 60 câu. Nộp bài để xem kết quả nhé!", ()=>{ view="exam"; finish(cur,false); });
+}
+function askReset(){
+  showModal("↻",`Làm lại Đề ${cur+1}?`,"Toàn bộ đáp án và kết quả hiện tại của đề này sẽ bị xóa.",()=>{ store.exams[cur]=blank(); save(); view="exam"; renderAll(); goTop(); },"Làm lại","Hủy");
+}
+$("submitBtn").onclick=askSubmit; $("mSubmit").onclick=askSubmit;
+$("resetBtn").onclick=askReset;
+$("mGrid").onclick=()=>$("right").classList.toggle("open");
+
+function renderAll(){ renderList(); renderMid(); renderRight(); }
+renderAll();
+</script>
+</body>
+</html>
